@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Quiz - TimeHop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav>
+<a href="index.html" class="logo">
+
+<img src="nav.png" alt="TimeHop Logo">
+
+</a>
+
+<ul class="nav-links">
+<li><a href="index.html">Home</a></li>
+<li><a href="past.html">Past</a></li>
+<li><a href="present.html">Present</a></li>
+<li><a href="future.html">Future</a></li>
+<li><a href="test.html">Test</a></li>
+</ul>
+</nav>
+
+
+<section class="quiz-container">
+
+<h1 id="quizTitle">AI Quiz</h1>
+
+<div class="quiz-box">
+
+<h2 id="question">Question text</h2>
+
+<div id="options"></div>
+
+<button id="nextBtn" class="btn">Next</button>
+
+</div>
+
+</section>
+
+
+<footer>
+<p>© 2026 TimeHop</p>
+</footer>
+
+
+<script>
+
+/* =========================
+QUIZ QUESTIONS
+========================= */
+
+const quizzes = {
+
+/* ---------- BEGINNER (10) ---------- */
+
+beginner:[
+
+{question:"What does AI stand for?",
+options:["Artificial Intelligence","Advanced Internet","Automatic Interface","Artificial Internet"],
+answer:0},
+
+{question:"Which company created ChatGPT?",
+options:["Google","OpenAI","Microsoft","Amazon"],
+answer:1},
+
+{question:"AI that understands images is called?",
+options:["Computer Vision","Data Mining","Speech AI","Network AI"],
+answer:0},
+
+{question:"Which AI assistant is developed by Google?",
+options:["Siri","Alexa","Gemini","Cortana"],
+answer:2},
+
+{question:"Which AI technology powers voice assistants?",
+options:["Speech Recognition","Computer Vision","Blockchain","Quantum AI"],
+answer:0},
+
+{question:"Which device commonly uses AI recommendations?",
+options:["Smartphone","Streaming Apps","Smart TV","All of these"],
+answer:3},
+
+{question:"Which industry uses AI for movie suggestions?",
+options:["Healthcare","Finance","Streaming Services","Agriculture"],
+answer:2},
+
+{question:"AI systems learn from?",
+options:["Data","Luck","Electricity","Random Code"],
+answer:0},
+
+{question:"Which company built AlphaGo?",
+options:["Microsoft","Google DeepMind","IBM","Tesla"],
+answer:1},
+
+{question:"AI in farming helps with?",
+options:["Crop monitoring","Weather prediction","Soil analysis","All of these"],
+answer:3}
+
+],
+
+
+/* ---------- INTERMEDIATE (15) ---------- */
+
+intermediate:[
+
+{question:"Which AI field focuses on language understanding?",
+options:["Computer Vision","Natural Language Processing","Robotics","Quantum AI"],
+answer:1},
+
+{question:"Which company builds self-driving cars?",
+options:["Tesla","Spotify","Netflix","Intel"],
+answer:0},
+
+{question:"Which AI model generates images from text?",
+options:["Stable Diffusion","Excel","Photoshop","Linux"],
+answer:0},
+
+{question:"Which technology helps AI recognize faces?",
+options:["Computer Vision","Blockchain","IoT","Cloud"],
+answer:0},
+
+{question:"AI recommendation systems are used by?",
+options:["Netflix","Amazon","YouTube","All of these"],
+answer:3},
+
+{question:"Machine Learning is a subset of?",
+options:["Artificial Intelligence","Networking","Databases","Cybersecurity"],
+answer:0},
+
+{question:"Which programming language is popular in AI?",
+options:["Python","HTML","CSS","PHP"],
+answer:0},
+
+{question:"Which company created AlphaGo?",
+options:["DeepMind","Apple","Meta","Intel"],
+answer:0},
+
+{question:"AI in banks mainly helps with?",
+options:["Fraud detection","Cooking","Designing","Video editing"],
+answer:0},
+
+{question:"AI in healthcare helps with?",
+options:["Disease detection","Medical imaging","Diagnosis support","All of these"],
+answer:3},
+
+{question:"Self-driving cars use?",
+options:["Sensors","Cameras","Neural Networks","All of these"],
+answer:3},
+
+{question:"Which company created Siri?",
+options:["Apple","Google","Amazon","IBM"],
+answer:0},
+
+{question:"AI chatbots are used for?",
+options:["Customer support","Gaming","Agriculture","Construction"],
+answer:0},
+
+{question:"Which company created Copilot?",
+options:["Microsoft","Google","Meta","Amazon"],
+answer:0},
+
+{question:"AI learning using rewards is called?",
+options:["Reinforcement Learning","Binary Learning","Static Learning","Manual Learning"],
+answer:0}
+
+],
+
+
+/* ---------- ADVANCED (20) ---------- */
+
+advanced:[
+
+{question:"What does AGI stand for?",
+options:["Artificial General Intelligence","Automated Global Internet","Advanced Graphic Intelligence","Artificial Grid Interface"],
+answer:0},
+
+{question:"Deep learning uses?",
+options:["Neural Networks","Sorting Algorithms","Binary Trees","Hash Tables"],
+answer:0},
+
+{question:"Which dataset revolutionized image recognition?",
+options:["ImageNet","Wikipedia","YouTube","Twitter"],
+answer:0},
+
+{question:"Which company created GPT models?",
+options:["OpenAI","Google","Meta","Apple"],
+answer:0},
+
+{question:"Which AI technique trains using rewards?",
+options:["Reinforcement Learning","Supervised Learning","Static Learning","Manual Learning"],
+answer:0},
+
+{question:"Which AI defeated Kasparov?",
+options:["Deep Blue","Watson","AlphaGo","Siri"],
+answer:0},
+
+{question:"Transformer models are used for?",
+options:["Language models","Graphics","Hardware","Game engines"],
+answer:0},
+
+{question:"Which company created Watson?",
+options:["IBM","Microsoft","Amazon","Tesla"],
+answer:0},
+
+{question:"Which AI generates images?",
+options:["Midjourney","Excel","Photoshop","Word"],
+answer:0},
+
+{question:"Which company created Claude AI?",
+options:["Anthropic","Google","Meta","Tesla"],
+answer:0},
+
+{question:"AI bias happens when?",
+options:["Training data is biased","Hardware fails","Code compiles","Internet breaks"],
+answer:0},
+
+{question:"Learning with labeled data is called?",
+options:["Supervised Learning","Random Learning","Manual Learning","Binary Learning"],
+answer:0},
+
+{question:"RNN models are used for?",
+options:["Sequence prediction","Hardware design","Networking","Encryption"],
+answer:0},
+
+{question:"GAN stands for?",
+options:["Generative Adversarial Network","General AI Network","Graph AI Node","Global AI Network"],
+answer:0},
+
+{question:"Which company created Stable Diffusion?",
+options:["Stability AI","Google","Meta","IBM"],
+answer:0},
+
+{question:"Which framework is popular for deep learning?",
+options:["TensorFlow","Excel","Photoshop","Word"],
+answer:0},
+
+{question:"Which company created TensorFlow?",
+options:["Google","Microsoft","Amazon","IBM"],
+answer:0},
+
+{question:"Which algorithm is common in classification?",
+options:["Decision Trees","Sorting","Compression","Encryption"],
+answer:0},
+
+{question:"Which company built Waymo self-driving cars?",
+options:["Google","Tesla","IBM","Apple"],
+answer:0},
+
+{question:"AI analyzing satellite data helps in?",
+options:["Climate monitoring","Agriculture","Disaster prediction","All of these"],
+answer:3}
+
+]
+
+};
+
+
+/* =========================
+QUIZ ENGINE
+========================= */
+
+const level = localStorage.getItem("currentTest");
+const questions = quizzes[level];
+
+let index = 0;
+let score = 0;
+let answered = false;
+
+const questionElement = document.getElementById("question");
+const optionsElement = document.getElementById("options");
+const nextBtn = document.getElementById("nextBtn");
+
+nextBtn.style.display="none";
+
+
+function loadQuestion(){
+
+answered = false;
+
+let q = questions[index];
+
+questionElement.innerText = (index+1) + ". " + q.question;
+
+optionsElement.innerHTML = "";
+
+q.options.forEach((option,i)=>{
+
+let btn = document.createElement("button");
+
+btn.innerText = option;
+btn.className="option-btn";
+
+btn.onclick = ()=>selectAnswer(btn,i);
+
+optionsElement.appendChild(btn);
+
+});
+
+}
+
+
+function selectAnswer(button,selected){
+
+if(answered) return;
+
+answered = true;
+
+const correct = questions[index].answer;
+
+const buttons = document.querySelectorAll(".option-btn");
+
+buttons.forEach((btn,i)=>{
+
+btn.disabled=true;
+
+if(i===correct){
+btn.style.background="#22c55e";
+}
+
+if(i===selected && i!==correct){
+btn.style.background="#ef4444";
+}
+
+});
+
+if(selected===correct){
+score++;
+}
+
+nextBtn.style.display="block";
+
+}
+
+
+nextBtn.onclick = ()=>{
+
+index++;
+
+nextBtn.style.display="none";
+
+if(index < questions.length){
+loadQuestion();
+}
+else{
+finishQuiz();
+}
+
+};
+
+
+function finishQuiz(){
+
+saveHistory();
+
+document.querySelector(".quiz-box").innerHTML=
+
+`<h2>Your Score: ${score} / ${questions.length}</h2>
+<a href="test.html" class="btn">Back to Tests</a>`;
+
+}
+
+function saveHistory(){
+
+let history = JSON.parse(localStorage.getItem("testHistory")) || [];
+
+history.push({
+level:level,
+score:score,
+total:questions.length,
+date:new Date().toLocaleString()
+});
+
+localStorage.setItem("testHistory", JSON.stringify(history));
+
+}
+
+loadQuestion();
+
+</script>
+
+
+<script>
+
+const history = JSON.parse(localStorage.getItem("testHistory"));
+const historyList = document.getElementById("historyList");
+
+if(history && history.length > 0){
+
+historyList.innerHTML = "";
+
+history.slice().reverse().forEach(test => {
+
+const div = document.createElement("div");
+
+div.style.marginBottom = "15px";
+
+div.innerHTML = `
+<strong>${test.level.toUpperCase()}</strong> Test —
+Score: ${test.score}/${test.total}
+<br>
+<small>${test.date}</small>
+`;
+
+historyList.appendChild(div);
+
+});
+
+}
+
+</script>
+<div id="loginModal" class="login-modal hidden">
+
+<div class="login-box">
+
+<input id="loginName" placeholder="Name">
+<input id="loginEmail" placeholder="Email">
+
+<select id="loginGender">
+<option value="">Gender</option>
+<option>Male</option>
+<option>Female</option>
+</select>
+
+<textarea id="loginBio" placeholder="Bio"></textarea>
+
+<button id="createAccount" class="btn">Create Account</button>
+
+</div>
+</div>
+<div id="authContainer"></div>
+
+
+</body>
+</html>

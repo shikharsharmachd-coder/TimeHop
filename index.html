@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TimeHop — The Evolution of AI</title>
+  <style>
+
+    /* ============================================================
+   TIMEHOP — INDEX PAGE CSS ONLY
+   Covers: navbar, hero, about section, explore strips, contact CTA, footer
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --void:       #050608;
+  --void-2:     #0a0b0f;
+  --void-3:     #111219;
+  --void-4:     #181921;
+  --surface:    rgba(255,255,255,0.03);
+  --border:     rgba(255,255,255,0.07);
+  --border-2:   rgba(255,200,80,0.15);
+
+  --amber:      #f5a623;
+  --amber-hot:  #ff8c00;
+  --amber-pale: #ffd580;
+
+  --text:       #f1f0ee;
+  --text-dim:   #8b8a88;
+  --text-muted: #4a4948;
+
+  --ff-display: 'Orbitron', sans-serif;
+  --ff-body:    'Space Grotesk', sans-serif;
+  --ff-mono:    'JetBrains Mono', monospace;
+
+  --nav-h:   72px;
+  --radius:  4px;
+  --radius-lg: 12px;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--ff-body);
+  background: #060c1a;
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Page-level background glow */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: -1;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0,195,255,0.08), transparent),
+    radial-gradient(ellipse 60% 60% at 80% 80%, rgba(168,85,247,0.06), transparent),
+    #060c1a;
+  pointer-events: none;
+}
+
+/* Subtle noise texture */
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+p  { line-height: 1.75; }
+a  { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  padding: 0 48px;
+  gap: 40px;
+  background: rgba(5,6,8,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  transition: top 0.4s ease;
+}
+
+.logo {
+  display: flex; align-items: center;
+  flex-shrink: 0;
+}
+.logo img {
+  height: 52px; width: auto;
+  filter: drop-shadow(0 0 8px rgba(245,166,35,0.5));
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 4px;
+  margin: 0 auto;
+}
+.nav-links a {
+  display: block;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  border-radius: 3px;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-links a:hover,
+.nav-links a.active {
+  color: #00c3ff;
+  background: rgba(245,166,35,0.08);
+}
+
+.auth-area {
+  display: flex; align-items: center; gap: 12px;
+}
+.signin-btn {
+  padding: 8px 20px;
+  background: transparent;
+  border: 1px solid #00c3ff;
+  color: #00c3ff;
+  font-family: var(--ff-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.signin-btn:hover {
+  background: #00c3ff;
+  color: var(--void);
+}
+.avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00c3ff, #007cf0);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 14px;
+  color: var(--void);
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: 0.2s;
+}
+.avatar:hover { border-color: #00c3ff; }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 28px;
+  background: #00c3ff;
+  color: var(--void);
+  font-family: var(--ff-body);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: 0.2s;
+  text-decoration: none;
+}
+.btn:hover {
+  background: #38bdf8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(245,166,35,0.3);
+}
+.btn.outline {
+  background: transparent;
+  border: 1px solid #00c3ff;
+  color: #00c3ff;
+}
+.btn.outline:hover {
+  background: #00c3ff;
+  color: var(--void);
+}
+
+/* ============================================================
+   HERO SECTION
+   ============================================================ */
+.hero {
+  position: relative;
+  height: 100vh; min-height: 600px;
+  display: flex; align-items: flex-end;
+  padding: 0 80px 100px;
+  overflow: hidden;
+}
+
+/* Background video */
+.hero-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* Gradient overlay: strong at bottom, light at top */
+.hero::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(
+    to top,
+    rgba(5,6,8,1) 0%,
+    rgba(5,6,8,0.7) 40%,
+    rgba(5,6,8,0.3) 100%
+  );
+}
+
+.hero-content {
+  position: relative; z-index: 2;
+  max-width: 700px;
+}
+
+/* "Est. 2026 — AI Learning Platform" label */
+.hero-eyebrow {
+  font-family: var(--ff-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: #00c3ff;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 32px; height: 1px;
+  background: #00c3ff;
+}
+
+/* Giant display heading */
+.hero h1 {
+  font-family: var(--ff-display);
+  font-size: clamp(64px, 9vw, 120px);
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  margin-bottom: 24px;
+}
+.hero h1 span { color: #00c3ff; }
+
+.hero p {
+  font-size: 17px;
+  color: var(--text-dim);
+  margin-bottom: 40px;
+  max-width: 480px;
+  line-height: 1.7;
+}
+
+/* CTA button row */
+.hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+/* Animated scroll cue at bottom center */
+.scroll-cue {
+  position: absolute; bottom: 40px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  font-family: var(--ff-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+.scroll-cue::after {
+  content: '';
+  width: 1px; height: 40px;
+  background: linear-gradient(to bottom, #00c3ff, transparent);
+}
+@keyframes scrollBounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(6px); }
+}
+
+/* ============================================================
+   ABOUT SECTION
+   ============================================================ */
+.about-home {
+  padding: 120px 80px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* "What is TimeHop?" label */
+.about-label {
+  font-family: var(--ff-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: #00c3ff;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.about-home h2 {
+  font-family: var(--ff-display);
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1;
+  margin-bottom: 24px;
+}
+
+.about-home p {
+  color: var(--text-dim);
+  font-size: 16px;
+  margin-bottom: 32px;
+}
+
+/* 2×2 stat grid on the right side */
+.about-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);  /* 1px grid lines */
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.stat-box {
+  background: var(--void-3);
+  padding: 28px 24px;
+  text-align: center;
+}
+.stat-box h3 {
+  font-family: var(--ff-display);
+  font-size: 42px;
+  color: #00c3ff;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.stat-box p {
+  font-size: 12px;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+/* ============================================================
+   EXPLORE STRIPS  (Past / Present / Future 3-col row)
+   ============================================================ */
+.explore-strips {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.explore-strip {
+  background: var(--void-3);
+  padding: 48px 40px;
+  display: block;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.explore-strip:not(:first-child) {
+  border-left: 1px solid var(--border);
+}
+.explore-strip:hover { background: var(--void-4); }
+
+.explore-strip .strip-label {
+  font-family: var(--ff-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: #00c3ff;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.explore-strip .strip-title {
+  font-family: var(--ff-display);
+  font-size: 42px;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.explore-strip .strip-desc {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+/* ============================================================
+   CONTACT CTA SECTION
+   ============================================================ */
+.contact-cta {
+  padding: 80px;
+}
+.contact-cta-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 40px;
+  padding: 60px 80px;
+  background: var(--void-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.contact-cta-inner h2 {
+  font-family: var(--ff-display);
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+.contact-cta-inner p {
+  color: var(--text-dim);
+  font-size: 15px;
+}
+
+/* ============================================================
+   LOGIN MODAL
+   ============================================================ */
+.login-modal {
+  position: fixed; inset: 0; z-index: 9000;
+  background: rgba(5,6,8,0.92);
+  backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: center;
+}
+.login-modal.hidden { display: none !important; }
+
+.login-box {
+  width: 420px;
+  background: var(--void-3);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-lg);
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.login-box::before {
+  content: 'Create Account';
+  font-family: var(--ff-display);
+  font-size: 32px;
+  color: #00c3ff;
+  margin-bottom: 6px;
+}
+.login-box input,
+.login-box select,
+.login-box textarea {
+  width: 100%;
+  padding: 13px 16px;
+  background: var(--void-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--ff-body);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.login-box input:focus,
+.login-box select:focus,
+.login-box textarea:focus { border-color: #00c3ff; }
+.login-box select option  { background: var(--void-3); }
+.login-box textarea       { min-height: 80px; resize: none; }
+.login-box .btn           { width: 100%; justify-content: center; margin-top: 6px; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  padding: 32px 80px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-family: var(--ff-mono);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  nav           { padding: 0 24px; gap: 20px; }
+  .nav-links    { gap: 2px; }
+  .hero         { padding: 0 40px 80px; }
+  .about-home   { padding: 80px 40px; gap: 40px; }
+  .contact-cta  { padding: 60px 40px; }
+  .contact-cta-inner { padding: 40px; }
+  footer        { padding: 24px 40px; }
+}
+
+@media (max-width: 768px) {
+  .nav-links    { display: none; }
+  nav           { padding: 0 20px; }
+  .hero         { padding: 0 24px 60px; }
+  .hero h1      { font-size: 56px; }
+  .about-home   { grid-template-columns: 1fr; padding: 60px 24px; }
+  .explore-strips { grid-template-columns: 1fr; }
+  .explore-strip:not(:first-child) { border-left: none; border-top: 1px solid var(--border); }
+  .contact-cta  { padding: 40px 24px; }
+  .contact-cta-inner { grid-template-columns: 1fr; padding: 32px; }
+  footer        { flex-direction: column; gap: 8px; text-align: center; padding: 24px; }
+}
+  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo"><img src="nav.png" alt="TimeHop"></a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="past.html">Past</a></li>
+    <li><a href="present.html">Present</a></li>
+    <li><a href="future.html">Future</a></li>
+    <li><a href="test.html">Test</a></li>
+    <li><a href="courses.html">Courses</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="auth-area">
+    <button id="signinBtn" class="signin-btn">Sign In</button>
+    <div class="profile hidden" id="profileBox">
+      <div class="avatar" id="avatarLetter"></div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <video autoplay muted loop playsinline class="hero-video">
+    <source src="video1.mp4" type="video/mp4">
+  </video>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Est. 2026 — AI Learning Platform</div>
+    <h1 style="-webkit-text-fill-color:transparent;background:linear-gradient(135deg,#00c3ff,#a855f7,#ec4899);-webkit-background-clip:text;background-clip:text;display:inline-block;">Time<span>Hop</span></h1>
+    <p>Travel through the past, present, and future of Artificial Intelligence. Explore milestones, discover real-world applications, and test your knowledge.</p>
+    <div class="hero-actions">
+      <a href="past.html" class="btn">Explore Timeline</a>
+      <a href="test.html" class="btn outline">Take the Quiz</a>
+    </div>
+  </div>
+  <div class="scroll-cue">Scroll</div>
+</section>
+
+<!-- ABOUT -->
+<section class="about-home">
+  <div>
+    <div class="about-label">What is TimeHop?</div>
+    <h2>Your AI Journey Starts Here</h2>
+    <p>TimeHop is an interactive educational platform covering the full arc of Artificial Intelligence — from Alan Turing's 1950 paper to the generative AI revolution. We make AI accessible, engaging, and genuinely interesting.</p>
+    <div style="display:flex;gap:12px;margin-top:8px;">
+      <a href="courses.html" class="btn">Start Learning</a>
+      <a href="contact.html" class="btn outline">Contact Us</a>
+    </div>
+  </div>
+  <div class="about-stats">
+    <div class="stat-box"><h3 style="color:#00c3ff;font-family:Orbitron,sans-serif;font-size:36px;background:none;-webkit-text-fill-color:#00c3ff;">75+</h3><p>Years of AI History</p></div>
+    <div class="stat-box"><h3 style="color:#a855f7;font-family:Orbitron,sans-serif;font-size:36px;background:none;-webkit-text-fill-color:#a855f7;">9</h3><p>AI Sectors Covered</p></div>
+    <div class="stat-box"><h3 style="color:#00c3ff;font-family:Orbitron,sans-serif;font-size:36px;background:none;-webkit-text-fill-color:#00c3ff;">45</h3><p>Quiz Questions</p></div>
+    <div class="stat-box"><h3 style="color:#a855f7;font-family:Orbitron,sans-serif;font-size:36px;background:none;-webkit-text-fill-color:#a855f7;">6</h3><p>AI Tools Explored</p></div>
+  </div>
+</section>
+
+<!-- EXPLORE STRIPS -->
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <a href="past.html" style="background:var(--void-3);padding:48px 40px;display:block;transition:background 0.2s;text-decoration:none;" onmouseover="this.style.background='var(--void-4)'" onmouseout="this.style.background='var(--void-3)'">
+    <div style="font-family:var(--ff-mono);font-size:11px;letter-spacing:0.2em;color:#00c3ff;text-transform:uppercase;margin-bottom:12px;">01 — Past</div>
+    <div style="font-family:var(--ff-display);font-size:42px;margin-bottom:12px;color:var(--text);">AI History</div>
+    <div style="font-size:14px;color:var(--text-dim);">From Turing to GPT — explore every major milestone in AI's 75-year evolution.</div>
+  </a>
+  <a href="present.html" style="background:var(--void-3);padding:48px 40px;display:block;transition:background 0.2s;text-decoration:none;border-left:1px solid var(--border);" onmouseover="this.style.background='var(--void-4)'" onmouseout="this.style.background='var(--void-3)'">
+    <div style="font-family:var(--ff-mono);font-size:11px;letter-spacing:0.2em;color:#00c3ff;text-transform:uppercase;margin-bottom:12px;">02 — Present</div>
+    <div style="font-family:var(--ff-display);font-size:42px;margin-bottom:12px;color:var(--text);">AI Today</div>
+    <div style="font-size:14px;color:var(--text-dim);">Healthcare, finance, robotics — discover how AI is reshaping every industry right now.</div>
+  </a>
+  <a href="future.html" style="background:var(--void-3);padding:48px 40px;display:block;transition:background 0.2s;text-decoration:none;border-left:1px solid var(--border);" onmouseover="this.style.background='var(--void-4)'" onmouseout="this.style.background='var(--void-3)'">
+    <div style="font-family:var(--ff-mono);font-size:11px;letter-spacing:0.2em;color:#00c3ff;text-transform:uppercase;margin-bottom:12px;">03 — Future</div>
+    <div style="font-family:var(--ff-display);font-size:42px;margin-bottom:12px;color:var(--text);">What's Next</div>
+    <div style="font-size:14px;color:var(--text-dim);">AGI, quantum computing, brain-computer interfaces — explore what's on the horizon.</div>
+  </a>
+</div>
+
+<!-- CONTACT CTA -->
+<section class="section contact-section" style="padding:80px;">
+  <div class="section-inner">
+    <div>
+      <h2>Have Questions?</h2>
+      <p>Reach out to the TimeHop team about our platform or AI learning resources.</p>
+    </div>
+    <a href="contact.html" class="btn">Get in Touch</a>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 TimeHop</span>
+  <span>Built by Shikhar &amp; Ranvir</span>
+</footer>
+
+<script src="script.js"></script>
+<div id="loginModal" class="login-modal hidden">
+  <div class="login-box">
+    <input id="loginName" placeholder="Name">
+    <input id="loginEmail" placeholder="Email">
+    <select id="loginGender">
+      <option value="">Gender</option>
+      <option>Male</option>
+      <option>Female</option>
+    </select>
+    <textarea id="loginBio" placeholder="Bio (optional)"></textarea>
+    <button id="createAccount" class="btn">Create Account</button>
+  </div>
+</div>
+<div id="authContainer"></div>
+
+</body>
+</html>

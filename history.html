@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<title>Full Test History - TimeHop</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav>
+
+<a href="index.html" class="logo">
+<img src="nav.png" alt="TimeHop Logo">
+</a>
+
+<ul class="nav-links">
+<li><a href="index.html">Home</a></li>
+<li><a href="past.html">Past</a></li>
+<li><a href="present.html">Present</a></li>
+<li><a href="future.html">Future</a></li>
+<li><a href="test.html" class="active">Test</a></li>
+<li><a href="courses.html">Courses</a></li>
+<li><a href="contact.html">Contact</a></li>
+</ul>
+
+<div class="auth-area">
+
+<button id="signinBtn" class="signin-btn">Sign In</button>
+
+<div class="profile hidden" id="profileBox">
+<div class="avatar" id="avatarLetter"></div>
+</div>
+
+</div>
+
+</nav>
+
+<section class="history-page">
+
+<h1>Full Test History</h1>
+<a href="test.html" class="btn back-btn">← Back to Tests</a>
+
+
+<div class="history-grid">
+
+<!-- Beginner -->
+<div class="history-section">
+<h2 class="beginner">Beginner Tests</h2>
+<div id="beginnerHistory"></div>
+</div>
+
+<!-- Intermediate -->
+<div class="history-section">
+<h2 class="intermediate">Intermediate Tests</h2>
+<div id="intermediateHistory"></div>
+</div>
+
+<!-- Advanced -->
+<div class="history-section">
+<h2 class="advanced">Advanced Tests</h2>
+<div id="advancedHistory"></div>
+</div>
+
+</div>
+
+</section>
+
+<footer>
+<p>© 2026 TimeHop</p>
+</footer>
+
+<script>
+
+const history = JSON.parse(localStorage.getItem("testHistory")) || [];
+
+const beginnerDiv = document.getElementById("beginnerHistory");
+const intermediateDiv = document.getElementById("intermediateHistory");
+const advancedDiv = document.getElementById("advancedHistory");
+
+function addCard(container,test,color){
+
+const card = document.createElement("div");
+
+card.className="history-card";
+
+card.style.borderLeft=`6px solid ${color}`;
+
+card.innerHTML=`
+<strong>Score: ${test.score}/${test.total}</strong>
+<br>
+<small>${test.date}</small>
+`;
+
+container.appendChild(card);
+
+}
+
+history.reverse().forEach(test => {
+
+if(test.level==="beginner"){
+addCard(beginnerDiv,test,"#22c55e");
+}
+
+if(test.level==="intermediate"){
+addCard(intermediateDiv,test,"#eab308");
+}
+
+if(test.level==="advanced"){
+addCard(advancedDiv,test,"#ef4444");
+}
+
+});
+
+</script>
+<div id="loginModal" class="login-modal hidden">
+
+<div class="login-box">
+
+<input id="loginName" placeholder="Name">
+<input id="loginEmail" placeholder="Email">
+
+<select id="loginGender">
+<option value="">Gender</option>
+<option>Male</option>
+<option>Female</option>
+</select>
+
+<textarea id="loginBio" placeholder="Bio"></textarea>
+
+<button id="createAccount" class="btn">Create Account</button>
+
+</div>
+</div>
+<div id="authContainer"></div>
+
+
+</body>
+</html>

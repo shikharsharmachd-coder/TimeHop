@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Past — TimeHop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy:      #060c1a;
+      --navy-2:    #0a1228;
+      --navy-3:    #0f1a38;
+      --navy-card: #0c1429;
+      --cyan:      #00c3ff;
+      --green:     #00e5a0;
+      --purple:    #a855f7;
+      --gold:      #f5a623;
+      --pink:      #ec4899;
+      --text:      #e2e8f0;
+      --text-dim:  #7a96bb;
+      --text-muted:#3d5478;
+      --border:    rgba(255,255,255,0.07);
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--navy);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 100% 50% at 50% -5%,  rgba(0,100,200,0.15), transparent),
+        radial-gradient(ellipse 70%  70% at 85% 90%,  rgba(120,0,200,0.10), transparent),
+        radial-gradient(ellipse 50%  40% at 5%  60%,  rgba(0,180,255,0.07), transparent);
+      pointer-events: none;
+    }
+    body > * { position: relative; z-index: 1; }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 70px; z-index: 1000;
+      display: flex; align-items: center;
+      padding: 0 48px;
+      background: rgba(6,12,26,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,195,255,0.10);
+      transition: top 0.4s ease;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; flex-shrink: 0;
+    }
+    .logo img {
+      height: 46px; width: auto;
+      filter: drop-shadow(0 0 8px rgba(0,195,255,0.55));
+    }
+    .logo-text { display: flex; flex-direction: column; line-height: 1.15; }
+    .logo-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 15px; font-weight: 700; color: var(--cyan);
+    }
+    .logo-tagline { font-size: 10px; color: var(--text-muted); letter-spacing: 0.04em; }
+
+    .nav-links {
+      list-style: none; display: flex; gap: 4px;
+      margin: 0 auto;
+    }
+    .nav-links a {
+      display: block; padding: 7px 15px;
+      font-size: 13px; font-weight: 500;
+      color: var(--text-dim); text-decoration: none;
+      border-radius: 6px; transition: 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+    .nav-links a.active {
+      color: var(--cyan);
+      border-bottom: 2px solid var(--cyan);
+      border-radius: 0;
+    }
+
+    .auth-area { display: flex; align-items: center; gap: 10px; }
+    .signin-btn {
+      padding: 8px 22px; border-radius: 20px;
+      background: linear-gradient(135deg, #00c3ff, #007cf0);
+      color: white; border: none;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: 0.2s;
+    }
+    .signin-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,195,255,0.4); }
+    .avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(135deg, #00c3ff, #007cf0);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 15px; color: white; cursor: pointer;
+    }
+    .hidden { display: none !important; }
+
+    /* ── HERO ── */
+    .past-hero {
+      padding: 120px 80px 56px;
+      text-align: center;
+    }
+    .hero-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 18px;
+      display: flex; align-items: center; justify-content: center; gap: 14px;
+    }
+    .hero-eyebrow::before, .hero-eyebrow::after {
+      content: ''; width: 48px; height: 1px;
+      background: linear-gradient(to right, transparent, var(--text-muted));
+    }
+    .hero-eyebrow::after { transform: scaleX(-1); }
+    .hero-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(34px, 5.5vw, 68px);
+      font-weight: 900; line-height: 1.08;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      background: linear-gradient(135deg, #00c3ff 0%, #a855f7 55%, #ec4899 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; margin-bottom: 18px;
+    }
+    .hero-sub {
+      font-size: 16px; color: var(--text-dim);
+      max-width: 560px; margin: 0 auto; line-height: 1.75;
+    }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      display: flex; align-items: center;
+      flex-wrap: wrap; gap: 10px;
+      padding: 0 80px 40px;
+    }
+    .filter-tab {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 9px 20px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.03);
+      color: var(--text-dim);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px; font-weight: 500;
+      cursor: pointer; transition: 0.2s; user-select: none;
+    }
+    .filter-tab:hover { border-color: rgba(0,195,255,0.4); color: var(--text); }
+    .filter-tab.active { background: rgba(0,195,255,0.10); border-color: rgba(0,195,255,0.5); color: #fff; box-shadow: 0 0 14px rgba(0,195,255,0.15); }
+    .filter-tab[data-filter="foundations"].active { background: rgba(0,229,160,0.10); border-color: rgba(0,229,160,0.5); box-shadow: 0 0 14px rgba(0,229,160,0.15); }
+    .filter-tab[data-filter="breakthroughs"].active { background: rgba(168,85,247,0.10); border-color: rgba(168,85,247,0.5); box-shadow: 0 0 14px rgba(168,85,247,0.15); }
+    .filter-tab[data-filter="modern"].active { background: rgba(245,166,35,0.10); border-color: rgba(245,166,35,0.5); box-shadow: 0 0 14px rgba(245,166,35,0.15); }
+    .filter-tab[data-filter="future"].active { background: rgba(236,72,153,0.10); border-color: rgba(236,72,153,0.5); box-shadow: 0 0 14px rgba(236,72,153,0.15); }
+    .tab-count {
+      font-size: 11px; font-family: 'JetBrains Mono', monospace;
+      background: rgba(255,255,255,0.06);
+      padding: 2px 7px; border-radius: 10px; color: var(--text-muted);
+    }
+
+    /* ── ERA SECTIONS ── */
+    .era-section { padding: 0 80px 64px; }
+    .era-section.era-hidden { display: none; }
+
+    .era-label {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 28px;
+    }
+    .era-label-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+      font-weight: 600; white-space: nowrap;
+    }
+    .era-label-line { flex: 1; height: 1px; }
+    .era-foundations .era-label-text { color: var(--green); }
+    .era-foundations .era-label-line { background: linear-gradient(to right, rgba(0,229,160,0.4), transparent); }
+    .era-early .era-label-text        { color: var(--cyan); }
+    .era-early .era-label-line        { background: linear-gradient(to right, rgba(0,195,255,0.4), transparent); }
+    .era-breakthroughs .era-label-text{ color: var(--purple); }
+    .era-breakthroughs .era-label-line{ background: linear-gradient(to right, rgba(168,85,247,0.4), transparent); }
+    .era-modern .era-label-text       { color: var(--gold); }
+    .era-modern .era-label-line       { background: linear-gradient(to right, rgba(245,166,35,0.4), transparent); }
+    .era-future .era-label-text       { color: var(--pink); }
+    .era-future .era-label-line       { background: linear-gradient(to right, rgba(236,72,153,0.4), transparent); }
+
+    /* ── CARD GRID ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    /* ── CARD ── */
+    .ai-card-past {
+      background: var(--navy-card);
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 28px 26px 26px;
+      display: flex; flex-direction: column; gap: 14px;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      position: relative; overflow: hidden;
+    }
+    .ai-card-past::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      border-radius: 16px 16px 0 0;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .ai-card-past:hover { transform: translateY(-5px); }
+    .ai-card-past:hover::before { opacity: 1; }
+    .ai-card-past.era-hidden { display: none; }
+
+    /* Era-specific styles */
+    .ai-card-past[data-era="foundations"] { border-color: rgba(0,229,160,0.15); }
+    .ai-card-past[data-era="foundations"]::before { background: linear-gradient(to right, var(--green), transparent); }
+    .ai-card-past[data-era="foundations"]:hover { border-color: rgba(0,229,160,0.45); box-shadow: 0 16px 40px rgba(0,229,160,0.12), 0 4px 10px rgba(0,0,0,0.4); }
+
+    .ai-card-past[data-era="early"] { border-color: rgba(0,195,255,0.15); }
+    .ai-card-past[data-era="early"]::before { background: linear-gradient(to right, var(--cyan), transparent); }
+    .ai-card-past[data-era="early"]:hover { border-color: rgba(0,195,255,0.45); box-shadow: 0 16px 40px rgba(0,195,255,0.12), 0 4px 10px rgba(0,0,0,0.4); }
+
+    .ai-card-past[data-era="breakthroughs"] { border-color: rgba(168,85,247,0.15); }
+    .ai-card-past[data-era="breakthroughs"]::before { background: linear-gradient(to right, var(--purple), transparent); }
+    .ai-card-past[data-era="breakthroughs"]:hover { border-color: rgba(168,85,247,0.45); box-shadow: 0 16px 40px rgba(168,85,247,0.15), 0 4px 10px rgba(0,0,0,0.4); }
+
+    .ai-card-past[data-era="modern"] { border-color: rgba(245,166,35,0.15); }
+    .ai-card-past[data-era="modern"]::before { background: linear-gradient(to right, var(--gold), transparent); }
+    .ai-card-past[data-era="modern"]:hover { border-color: rgba(245,166,35,0.45); box-shadow: 0 16px 40px rgba(245,166,35,0.12), 0 4px 10px rgba(0,0,0,0.4); }
+
+    .ai-card-past[data-era="future"] { border-color: rgba(236,72,153,0.15); }
+    .ai-card-past[data-era="future"]::before { background: linear-gradient(to right, var(--pink), transparent); }
+    .ai-card-past[data-era="future"]:hover { border-color: rgba(236,72,153,0.45); box-shadow: 0 16px 40px rgba(236,72,153,0.15), 0 4px 10px rgba(0,0,0,0.4); }
+
+    /* Card internals */
+    .card-top { display: flex; align-items: center; gap: 14px; }
+    .card-icon-wrap {
+      width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+    }
+    .icon-foundations   { background: rgba(0,229,160,0.10); border: 1.5px solid rgba(0,229,160,0.30); }
+    .icon-early         { background: rgba(0,195,255,0.10); border: 1.5px solid rgba(0,195,255,0.30); }
+    .icon-breakthroughs { background: rgba(168,85,247,0.10); border: 1.5px solid rgba(168,85,247,0.30); }
+    .icon-modern        { background: rgba(245,166,35,0.10); border: 1.5px solid rgba(245,166,35,0.30); }
+    .icon-future        { background: rgba(236,72,153,0.10); border: 1.5px solid rgba(236,72,153,0.30); }
+
+    .card-year-wrap { display: flex; flex-direction: column; gap: 4px; }
+    .card-year {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 20px; font-weight: 700; line-height: 1;
+    }
+    .year-foundations   { color: var(--green); }
+    .year-early         { color: var(--cyan); }
+    .year-breakthroughs { color: var(--purple); }
+    .year-modern        { color: var(--gold); }
+    .year-future        { color: var(--pink); }
+
+    .era-badge {
+      display: inline-block; padding: 3px 9px;
+      border-radius: 6px; font-size: 11px; font-weight: 600;
+    }
+    .badge-foundations   { background: rgba(0,229,160,0.10); color: var(--green); border: 1px solid rgba(0,229,160,0.22); }
+    .badge-early         { background: rgba(0,195,255,0.10); color: var(--cyan); border: 1px solid rgba(0,195,255,0.22); }
+    .badge-breakthroughs { background: rgba(168,85,247,0.10); color: var(--purple); border: 1px solid rgba(168,85,247,0.22); }
+    .badge-modern        { background: rgba(245,166,35,0.10); color: var(--gold); border: 1px solid rgba(245,166,35,0.22); }
+    .badge-future        { background: rgba(236,72,153,0.10); color: var(--pink); border: 1px solid rgba(236,72,153,0.22); }
+
+    .card-divider { height: 1px; background: rgba(255,255,255,0.06); }
+
+    .card-title {
+      font-size: 17px; font-weight: 700;
+      color: var(--text); line-height: 1.35;
+    }
+    .card-desc {
+      font-size: 14.5px; color: var(--text-dim);
+      line-height: 1.80; flex: 1;
+    }
+    .card-cta {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 600;
+      padding-top: 4px;
+      transition: gap 0.2s;
+      pointer-events: none;
+    }
+    .ai-card-past[data-era="foundations"] .card-cta { color: var(--green); }
+    .ai-card-past[data-era="early"]       .card-cta { color: var(--cyan); }
+    .ai-card-past[data-era="breakthroughs"] .card-cta { color: var(--purple); }
+    .ai-card-past[data-era="modern"]      .card-cta { color: var(--gold); }
+    .ai-card-past[data-era="future"]      .card-cta { color: var(--pink); }
+    .ai-card-past:hover .card-cta { gap: 10px; }
+
+    /* ── TIMELINE RAIL ── */
+    .timeline-section { padding: 0 80px 52px; }
+    .timeline-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 22px;
+    }
+    .timeline-rail {
+      display: flex; align-items: center;
+      overflow-x: auto; padding-bottom: 28px;
+      scrollbar-width: none;
+    }
+    .timeline-rail::-webkit-scrollbar { display: none; }
+    .tl-segment { display: flex; align-items: center; flex: 1; min-width: 56px; }
+    .tl-dot {
+      width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0;
+      border: 2px solid; background: var(--navy);
+      cursor: pointer; transition: transform 0.2s, box-shadow 0.3s;
+      position: relative;
+    }
+    .tl-dot::after {
+      content: attr(data-year);
+      position: absolute; bottom: -22px; left: 50%;
+      transform: translateX(-50%);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px; color: var(--text-muted);
+      white-space: nowrap; pointer-events: none;
+    }
+    .tl-dot:hover { transform: scale(1.5); box-shadow: 0 0 12px currentColor; }
+    .tl-line { flex: 1; height: 2px; background: rgba(255,255,255,0.06); }
+    .tl-dot.foundations    { border-color: var(--green);  box-shadow: 0 0 7px rgba(0,229,160,0.45); }
+    .tl-dot.early          { border-color: var(--cyan);   box-shadow: 0 0 7px rgba(0,195,255,0.45); }
+    .tl-dot.breakthroughs  { border-color: var(--purple); box-shadow: 0 0 7px rgba(168,85,247,0.45); }
+    .tl-dot.modern         { border-color: var(--gold);   box-shadow: 0 0 7px rgba(245,166,35,0.45); }
+    .tl-dot.future         { border-color: var(--pink);   box-shadow: 0 0 7px rgba(236,72,153,0.45); }
+    .tl-more { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-muted); margin-left: 14px; }
+
+    /* ── QUOTE BAR ── */
+    .quote-bar {
+      display: grid; grid-template-columns: 1fr auto;
+      margin: 0 80px 60px;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px; overflow: hidden;
+      background: rgba(255,255,255,0.02);
+    }
+    .quote-side {
+      display: flex; align-items: center; gap: 20px;
+      padding: 28px 32px;
+    }
+    .quote-icon {
+      width: 50px; height: 50px; border-radius: 12px; flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(0,100,200,0.25), rgba(0,60,140,0.25));
+      border: 1px solid rgba(0,195,255,0.2);
+      display: flex; align-items: center; justify-content: center; font-size: 22px;
+    }
+    .quote-text { font-size: 14px; color: var(--text-dim); line-height: 1.7; font-style: italic; }
+    .cta-side {
+      display: flex; align-items: center; gap: 16px;
+      padding: 28px 32px; min-width: 290px;
+      border-left: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.02);
+      cursor: pointer; text-decoration: none; transition: background 0.2s;
+    }
+    .cta-side:hover { background: rgba(255,255,255,0.05); }
+    .cta-icon {
+      width: 50px; height: 50px; border-radius: 12px; flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(245,166,35,0.18), rgba(200,100,0,0.18));
+      border: 1px solid rgba(245,166,35,0.28);
+      display: flex; align-items: center; justify-content: center; font-size: 22px;
+    }
+    .cta-text h4 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .cta-text p  { font-size: 13px; color: var(--text-dim); }
+    .cta-arrow {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; color: var(--text-dim); margin-left: auto;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 24px 80px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 13px; color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── LOGIN MODAL ── */
+    .login-modal {
+      position: fixed; inset: 0; z-index: 9000;
+      background: rgba(6,12,26,0.94);
+      backdrop-filter: blur(14px);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .login-box {
+      width: 420px; background: var(--navy-3);
+      border: 1px solid rgba(0,195,255,0.18);
+      border-radius: 16px; padding: 44px 36px;
+      display: flex; flex-direction: column; gap: 13px;
+    }
+    .login-box::before {
+      content: 'Create Account';
+      font-family: 'Orbitron', sans-serif;
+      font-size: 22px; font-weight: 700; color: var(--cyan); margin-bottom: 4px;
+    }
+    .login-box input, .login-box select, .login-box textarea {
+      width: 100%; padding: 12px 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.10); border-radius: 8px;
+      color: var(--text); font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px; outline: none; transition: border-color 0.2s;
+    }
+    .login-box input:focus, .login-box select:focus, .login-box textarea:focus { border-color: var(--cyan); }
+    .login-box select option { background: var(--navy-3); }
+    .login-box textarea { min-height: 80px; resize: none; }
+    .login-box .btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, #00c3ff, #007cf0);
+      color: white; font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px; font-weight: 600;
+      border: none; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-top: 4px;
+    }
+    .login-box .btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .past-hero, .filter-bar, .era-section, .timeline-section { padding-left: 24px; padding-right: 24px; }
+      .quote-bar { margin: 0 24px 48px; grid-template-columns: 1fr; }
+      .cta-side  { border-left: none; border-top: 1px solid rgba(255,255,255,0.07); min-width: 0; }
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      footer { padding: 20px 24px; flex-direction: column; gap: 6px; }
+    }
+    @media (max-width: 600px) {
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════ NAVBAR ════ -->
+<nav>
+  <a href="index.html" class="logo">
+    <img src="nav.png" alt="TimeHop">
+    <div class="logo-text">
+      <!-- <span class="logo-name">TimeHop</span> -->
+      <!-- <span class="logo-tagline">Explore AI Through Time</span> -->
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="past.html" class="active">Past</a></li>
+    <li><a href="present.html">Present</a></li>
+    <li><a href="future.html">Future</a></li>
+    <li><a href="test.html">Test</a></li>
+    <li><a href="courses.html">Courses</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="auth-area">
+    <button id="signinBtn" class="signin-btn">Sign In</button>
+    <div class="profile hidden" id="profileBox">
+      <div class="avatar" id="avatarLetter"></div>
+    </div>
+  </div>
+</nav>
+
+<!-- ════ HERO ════ -->
+<section class="past-hero">
+  <div class="hero-eyebrow">The Journey Of</div>
+  <h1 class="hero-title">Artificial Intelligence</h1>
+  <p class="hero-sub">Explore the milestones that shaped AI — from the first mathematical neuron to the generative revolution and beyond. Click any card to read the full deep dive.</p>
+</section>
+
+<!-- ════ FILTER BAR ════ -->
+<div class="filter-bar">
+  <button class="filter-tab active" data-filter="all">All Eras <span class="tab-count">15</span></button>
+  <button class="filter-tab" data-filter="foundations">✦ Foundations <span class="tab-count">3</span></button>
+  <button class="filter-tab" data-filter="early">💬 Early Systems <span class="tab-count">4</span></button>
+  <button class="filter-tab" data-filter="breakthroughs">⚡ Breakthroughs <span class="tab-count">4</span></button>
+  <button class="filter-tab" data-filter="modern">🤖 Modern AI <span class="tab-count">3</span></button>
+  <button class="filter-tab" data-filter="future">🚀 Future <span class="tab-count">1</span></button>
+</div>
+
+<!-- ════ FOUNDATIONS ════ -->
+<section class="era-section era-foundations" id="section-foundations">
+  <div class="era-label">
+    <span class="era-label-text">Foundations — 1943 to 1956</span>
+    <div class="era-label-line"></div>
+  </div>
+  <div class="cards-grid">
+
+    <div class="ai-card-past" data-era="foundations" data-topic="neuron">
+      <div class="card-top">
+        <div class="card-icon-wrap icon-foundations">🧠</div>
+        <div class="card-year-wrap">
+          <span class="card-year year-foundations">1943</span>
+          <span class="era-badge badge-foundations">Foundations</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-title">Artificial Neuron</div>
+      <div class="card-desc">Warren McCulloch and Walter Pitts published the first mathematical model of an artificial neuron. Their proof that logical operations could run through a neural network laid the bedrock of every AI system built since — from early perceptrons to today's transformers.</div>
+      <div class="card-cta">Read full deep dive <span>→</span></div>
+    </div>
+
+    <div class="ai-card-past" data-era="foundations" data-topic="turing">
+      <div class="card-top">
+        <div class="card-icon-wrap icon-foundations">♟️</div>
+        <div class="card-year-wrap">
+          <span class="card-year year-foundations">1950</span>
+          <span class="era-badge badge-foundations">Foundations</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-title">The Turing Test</div>
+      <div class="card-desc">Alan Turing asked history's most consequential question: can machines think? His Imitation Game test — where a machine must convince a judge it's human — still defines the philosophical frontier of AI research over 70 years later.</div>
+      <div class="card-cta">Read full deep dive <span>→</span></div>
+    </div>
+
+    <div class="ai-card-past" data-era="foundations" data-topic="dartmouth">
+      <div class="card-top">
+        <div class="card-icon-wrap icon-foundations">🎓</div>
+        <div class="card-year-wrap">
+          <span class="card-year year-foundations">1956</span>
+          <span class="era-badge badge-foundations">Foundations</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-title">Dartmouth Conference</div>
+      <div class="card-desc">John McCarthy, Marvin Minsky, and colleagues gathered for a summer workshop that officially coined the term "Artificial Intelligence." AI became a recognized scientific discipline — and a grand human ambition — on these grounds in New Hampshire.</div>
+      <div class="card-cta">Read full deep dive <span>→</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════ EARLY SYSTEMS ════ -->
+<section class="era-section era-early" id="section-early">
+  <div class="era-label">
+    <span class="era-label-text">Early AI Systems — 1966 to 1986</span>
+    <div class="era-label-line"></div>
+  </div>
+  <div class="cards-grid">
+
+    <div class="ai-card-past" data-era="early" data-topic="eliza">
+      <div class="card-top">
+        <div class="card-icon-wrap icon-early">💬</div>
+        <div class="card-year-wrap">
+          <span class="card-year year-early">1966</span>
+          <span class="era-badge badge-early">Early Systems</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-title">ELIZA Chatbot</div>
+      <div class="card-desc">Joseph Weizenbaum's ELIZA was the first program to simulate human conversation through simple pattern matching. Some users genuinely believed they were talking to a real therapist — revealing just how easily humans anthropomorphize machines.</div>
+      <div class="card-cta">Read full deep dive <span>→</span></div>
+    </div>
+
+    <div class="ai-card-past" data-era="early" data-topic="aiwinter">
+      <div class="card-top">
+        <div class="card-icon-wrap icon-early">❄️</div>
+        <div class="card-year-wrap">
+          <span class="card-year year-early">1974</span>
+          <span class="era-badge badge-early">Early Systems</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-title">First AI Winter</div>
+      <div class="card-desc">Funding collapsed. Early AI systems failed to scale beyond toy problems, hardware was impossibly slow, and government bodies lost patience. The field entered a long freeze — forcing researchers to abandon hype in favour of mathematical rigour.</div>
+      <div class="card-cta">Read full deep dive <span>→</span></div>
+    </div>
+
+    <div class="ai-card-past" data-era="early" data-topic="expert">
+      <div class="card-top">
+        <div class="card-icon-wrap icon-early">⚙️</div>
+        <div class="card-year-wrap">
+          <span class="card-year year-early">1980</span>
+          <span class="era-badge badge-early">Early Systems</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-title">Expert Systems</div>
+      <div class="card-desc">Rather than building general intelligence, AI pivoted to hyper-specific rule-based programs. MYCIN diagnosed blood infections with doctor-level accuracy. XCON configured computer orders, saving companies millions. AI found its first commercial home.</div>
+      <div class="card-cta">Read full deep dive <span>→</span></div>
+    </div>
+
+    <div class="ai-card-past" data-era="early" data-topic="backprop">
+      <div class="card-top">
+        <div class="card-icon-wrap icon-early">📡</div>
+        <div class="card-year-wrap">
+          <span class="card-year year-early">1986</span>
+          <span class="era-badge badge-early">Early Systems</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-title">Backpropagation</div>
+      <div class="card-desc">Rumelhart, Hinton, and Williams published the backpropagation algorithm — using calculus to let neural networks learn from their own mistakes by adjusting weights backwards through the network. Without this, modern deep learning simply would not exist.</div>
+      <div class="card-cta">Read full deep dive <span>→</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════ BREAKTHROUGHS ════ -->
+<section class="era-section era-breakthroughs" id="section-breakthroughs">
+  <div class="era-label">
+    <span class="era-label-text">Breakthrough Era — 1997 to 2012</span>
+    <div class="era-label-line"></div>
+  </div>
+  <div class="cards-grid">
+
+    <div class="ai-card-past" data-era="breakthroughs" data-topic="deepblue">
+      <div class="card-top">
+        <div class="card-icon-wrap icon-breakthroughs">♟️</div>
+        <div class="card-year-wrap">
+          <span class="card-year year-breakthroughs">1997</span>
+          <span class="era-badge badge-breakthroughs">Breakthroughs</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-title">Deep Blue</div>
+      <div class="card-desc">IBM's chess computer defeated world champion Garry Kasparov in a 6-game match, evaluating 200 million positions per second using custom VLSI chips. For the first time, a machine definitively surpassed a human at a task requiring complex strategic reasoning.</div>
+      <div class="card-cta">Read full deep dive <span>→</span></div>
+    </div>
+
+    <div class="ai-card-past" data-era="breakthroughs" data-topic="deeplearning">
+      <div class="card-top">
+        <div class="card-icon-wrap icon-breakthroughs">🔬</div>
+        <div class="card-year-wrap">
+          <span class="card-year year-breakthroughs">2006</span>
+          <span class="era-badge badge-breakthroughs">Breakthroughs</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-title">Deep Learning Revival</div>
+      <div class="card-desc">Geoffrey Hinton showed that deep belief networks could be trained layer-by-layer using contrastive divergence, solving the vanishing gradient problem that had blocked deep architectures for decades. The stage was set for the 2012 explosion that changed everything.</div>
+      <div class="card-cta">Read full deep dive <span>→</span></div>
+    </div>
+
+    <div class="ai-card-past" data-era="breakthroughs" data-topic="watson">
+      <div class="card-top">
+        <div class="card-icon-wrap icon-breakthroughs">🏆</div>
+        <div class="card-year-wrap">
+          <span class="card-year year-breakthroughs">2011</span>
+          <span class="era-badge badge-breakthroughs">Breakthroughs</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-title">IBM Watson</div>
+      <div class="card-desc">Watson crushed human Jeopardy! champions on live television, demonstrating that machines could parse riddles, puns, and natural language nuance in milliseconds. It held 200 million pages of content in RAM — no internet connection required.</div>
+      <div class="card-cta">Read full deep dive <span>→</span></div>
+    </div>
+
+    <div class="ai-card-past" data-era="breakthroughs" data-topic="dlboom">
+      <div class="card-top">
+        <div class="card-icon-wrap icon-breakthroughs">💥</div>
+        <div class="card-year-wrap">
+          <span class="card-year year-breakthroughs">2012</span>
+          <span class="era-badge badge-breakthroughs">Breakthroughs</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-title">The Deep Learning Boom</div>
+      <div class="card-desc">AlexNet slashed image recognition error from 26% to 15% at ImageNet, powered by NVIDIA GPUs and the ReLU activation function. The AI world permanently shifted — deep neural networks became the dominant paradigm for virtually every AI task.</div>
+      <div class="card-cta">Read full deep dive <span>→</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════ MODERN AI ════ -->
+<section class="era-section era-modern" id="section-modern">
+  <div class="era-label">
+    <span class="era-label-text">Modern AI Revolution — 2016 to 2022</span>
+    <div class="era-label-line"></div>
+  </div>
+  <div class="cards-grid">
+
+    <div class="ai-card-past" data-era="modern" data-topic="alphago">
+      <div class="card-top">
+        <div class="card-icon-wrap icon-modern">⬡</div>
+        <div class="card-year-wrap">
+          <span class="card-year year-modern">2016</span>
+          <span class="era-badge badge-modern">Modern AI</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-title">AlphaGo</div>
+      <div class="card-desc">DeepMind's AlphaGo defeated 18-time world Go champion Lee Sedol — a game with more positions than atoms in the universe. Its legendary "Move 37" was so unconventional it made Lee Sedol leave the room for 15 minutes in disbelief at what he'd just witnessed.</div>
+      <div class="card-cta">Read full deep dive <span>→</span></div>
+    </div>
+
+    <div class="ai-card-past" data-era="modern" data-topic="llm">
+      <div class="card-top">
+        <div class="card-icon-wrap icon-modern">📝</div>
+        <div class="card-year-wrap">
+          <span class="card-year year-modern">2020</span>
+          <span class="era-badge badge-modern">Modern AI</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-title">Large Language Models</div>
+      <div class="card-desc">GPT-3 arrived with 175 billion parameters and demonstrated "few-shot learning" — writing essays, translating languages, and debugging code from just a short prompt. No fine-tuning needed. The AI landscape changed overnight and has never looked back.</div>
+      <div class="card-cta">Read full deep dive <span>→</span></div>
+    </div>
+
+    <div class="ai-card-past" data-era="modern" data-topic="genai">
+      <div class="card-top">
+        <div class="card-icon-wrap icon-modern">✨</div>
+        <div class="card-year-wrap">
+          <span class="card-year year-modern">2022</span>
+          <span class="era-badge badge-modern">Modern AI</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-title">Generative AI Goes Mainstream</div>
+      <div class="card-desc">ChatGPT reached 100 million users in 2 months — the fastest product adoption in history. Midjourney and DALL-E made photorealistic art accessible to anyone with words. Every creative profession began reckoning with what AI-generated content truly meant.</div>
+      <div class="card-cta">Read full deep dive <span>→</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════ FUTURE ════ -->
+<section class="era-section era-future" id="section-future">
+  <div class="era-label">
+    <span class="era-label-text">What's Next — The Horizon</span>
+    <div class="era-label-line"></div>
+  </div>
+  <div class="cards-grid">
+
+    <div class="ai-card-past" data-era="future" data-topic="agi">
+      <div class="card-top">
+        <div class="card-icon-wrap icon-future">🚀</div>
+        <div class="card-year-wrap">
+          <span class="card-year year-future">Future</span>
+          <span class="era-badge badge-future">Future</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-title">Artificial General Intelligence</div>
+      <div class="card-desc">AGI — AI that reasons across every domain at human level or beyond — is the field's ultimate endgame. Some researchers believe it's within a decade. Others think a century. The debate is arguably the most consequential question in human history right now.</div>
+      <div class="card-cta">Read full deep dive <span>→</span></div>
+    </div>
+
+    <div class="ai-card-past" data-era="future" style="background:linear-gradient(135deg,rgba(236,72,153,0.05),rgba(168,85,247,0.05));border-color:rgba(236,72,153,0.18);" onclick="window.location.href='future.html'">
+      <div class="card-top">
+        <div class="card-icon-wrap" style="background:rgba(236,72,153,0.10);border:1.5px solid rgba(236,72,153,0.3);">🌌</div>
+        <div class="card-year-wrap">
+          <span class="card-year" style="color:var(--pink);">2026+</span>
+          <span class="era-badge badge-future">Explore More</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-title">Quantum AI · BCI · Humanoid Robots</div>
+      <div class="card-desc">AGI is just one frontier. Explore quantum computing fused with AI, brain-computer interfaces, autonomous AI agents, and physical humanoid robotics — the full picture of what leading labs are building right now in 2026.</div>
+      <div class="card-cta" style="color:var(--pink);">Go to Future page <span>→</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════ TIMELINE RAIL ════ -->
+<section class="timeline-section">
+  <!-- <div class="timeline-label">— Click a dot to jump to that moment —</div> -->
+  <div class="timeline-rail">
+    <div class="tl-segment"><div class="tl-dot foundations" data-year="1943" onclick="goToTopic('neuron')"></div><div class="tl-line"></div></div>
+    <div class="tl-segment"><div class="tl-dot foundations" data-year="1950" onclick="goToTopic('turing')"></div><div class="tl-line"></div></div>
+    <div class="tl-segment"><div class="tl-dot foundations" data-year="1956" onclick="goToTopic('dartmouth')"></div><div class="tl-line"></div></div>
+    <div class="tl-segment"><div class="tl-dot early"        data-year="1966" onclick="goToTopic('eliza')"></div><div class="tl-line"></div></div>
+    <div class="tl-segment"><div class="tl-dot early"        data-year="1974" onclick="goToTopic('aiwinter')"></div><div class="tl-line"></div></div>
+    <div class="tl-segment"><div class="tl-dot early"        data-year="1980" onclick="goToTopic('expert')"></div><div class="tl-line"></div></div>
+    <div class="tl-segment"><div class="tl-dot early"        data-year="1986" onclick="goToTopic('backprop')"></div><div class="tl-line"></div></div>
+    <div class="tl-segment"><div class="tl-dot breakthroughs" data-year="1997" onclick="goToTopic('deepblue')"></div><div class="tl-line"></div></div>
+    <div class="tl-segment"><div class="tl-dot breakthroughs" data-year="2006" onclick="goToTopic('deeplearning')"></div><div class="tl-line"></div></div>
+    <div class="tl-segment"><div class="tl-dot breakthroughs" data-year="2011" onclick="goToTopic('watson')"></div><div class="tl-line"></div></div>
+    <div class="tl-segment"><div class="tl-dot breakthroughs" data-year="2012" onclick="goToTopic('dlboom')"></div><div class="tl-line"></div></div>
+    <div class="tl-segment"><div class="tl-dot modern"       data-year="2016" onclick="goToTopic('alphago')"></div><div class="tl-line"></div></div>
+    <div class="tl-segment"><div class="tl-dot modern"       data-year="2020" onclick="goToTopic('llm')"></div><div class="tl-line"></div></div>
+    <div class="tl-segment"><div class="tl-dot modern"       data-year="2022" onclick="goToTopic('genai')"></div><div class="tl-line"></div></div>
+    <div class="tl-segment"><div class="tl-dot future"       data-year="→AGI" onclick="goToTopic('agi')"></div></div>
+    <span class="tl-more">• • •</span>
+  </div>
+</section>
+
+<!-- ════ QUOTE BAR ════ -->
+<div class="quote-bar">
+  <div class="quote-side">
+    <div class="quote-icon">❝</div>
+    <p class="quote-text">AI is not just about machines — it's about the curiosity, imagination and persistence of humanity to build intelligence that can augment a better future.</p>
+  </div>
+  <a href="future.html" class="cta-side">
+    <div class="cta-icon">⭐</div>
+    <div class="cta-text">
+      <h4>The story continues...</h4>
+      <p>The best chapters are still being written.</p>
+    </div>
+    <div class="cta-arrow">›</div>
+  </a>
+</div>
+
+<footer>
+  <span>© 2026 TimeHop</span>
+  <span>Click any card to dive deeper →</span>
+</footer>
+
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="login-modal hidden">
+  <div class="login-box">
+    <input id="loginName" placeholder="Name">
+    <input id="loginEmail" placeholder="Email">
+    <select id="loginGender">
+      <option value="">Gender</option>
+      <option>Male</option>
+      <option>Female</option>
+    </select>
+    <textarea id="loginBio" placeholder="Bio (optional)"></textarea>
+    <button id="createAccount" class="btn">Create Account</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+  /* ── FILTER TABS ── */
+  const tabs     = document.querySelectorAll('.filter-tab');
+  const cards    = document.querySelectorAll('.ai-card-past[data-topic]');
+  const sections = document.querySelectorAll('.era-section');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const filter = tab.dataset.filter;
+
+      cards.forEach(card => {
+        const match = filter === 'all' || card.dataset.era === filter;
+        card.classList.toggle('era-hidden', !match);
+      });
+
+      sections.forEach(section => {
+        const visible = section.querySelectorAll('.ai-card-past:not(.era-hidden)');
+        section.classList.toggle('era-hidden', visible.length === 0);
+      });
+    });
+  });
+
+  /* ── CARD → detail.html ── */
+cards.forEach((card, index) => {
+  card.addEventListener('click', () => {
+    const topic = card.dataset.topic;
+    if(topic){
+      window.location.href = `detail.html?topic=${topic}&index=${index}`;
+    }
+  });
+});
+
+  /* ── TIMELINE DOT → open detail page ── */
+  function goToTopic(topic) {
+    window.location.href = 'detail.html?topic=' + topic;
+  }
+
+  /* ── NAVBAR hide on scroll down ── */
+  let lastST = 0;
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    const st  = window.pageYOffset;
+    nav.style.top = (st > lastST && st > 80) ? '-80px' : '0';
+    lastST = st <= 0 ? 0 : st;
+  });
+
+  /* ── MODAL outside click ── */
+  const modal = document.getElementById('loginModal');
+  if (modal) modal.addEventListener('click', e => {
+    if (e.target === modal) modal.classList.add('hidden');
+  });
+</script>
+</body>
+</html>

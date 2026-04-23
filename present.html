@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Present - TimeHop</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 70px; z-index: 1000;
+    display: flex; align-items: center;
+    padding: 0 48px;
+    background: rgba(6,12,26,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0,195,255,0.10);
+    transition: top 0.4s ease;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+  .logo img { height: 46px; width: auto; filter: drop-shadow(0 0 8px rgba(0,195,255,0.55)); }
+  .nav-links { list-style: none; display: flex; gap: 4px; margin: 0 auto; }
+  .nav-links a {
+    display: block; padding: 7px 15px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px; font-weight: 500;
+    color: #7a96bb; text-decoration: none;
+    border-radius: 6px; transition: 0.2s;
+  }
+  .nav-links a:hover { color: #e2e8f0; background: rgba(255,255,255,0.06); }
+  .nav-links a.active { color: #00c3ff; border-bottom: 2px solid #00c3ff; border-radius: 0; }
+  .auth-area { display: flex; align-items: center; gap: 10px; }
+  .signin-btn {
+    padding: 8px 22px; border-radius: 20px;
+    background: linear-gradient(135deg, #00c3ff, #007cf0);
+    color: white; border: none;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: 0.2s;
+  }
+  .signin-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,195,255,0.4); }
+  .avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: linear-gradient(135deg, #00c3ff, #007cf0);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 15px; color: white; cursor: pointer;
+  }
+  .hidden { display: none !important; }
+  .profile { cursor: pointer; }
+</style>
+</head>
+
+<body class="present-page-body">
+
+  <video autoplay muted loop playsinline id="bg-video">
+    <source src="video4.mp4" type="video/mp4">
+  </video>
+<!-- NAVBAR -->
+<nav>
+<a href="index.html" class="logo">
+  <img src="nav.png" alt="TimeHop Logo">
+</a>
+<ul class="nav-links">
+<li><a href="index.html">Home</a></li>
+<li><a href="past.html">Past</a></li>
+<li><a href="present.html" class="active">Present</a></li>
+<li><a href="future.html">Future</a></li>
+<li><a href="test.html">Test</a></li>
+<li><a href="courses.html">Courses</a></li>
+<li><a href="contact.html">Contact</a></li>
+</ul>
+<div class="auth-area">
+  <button id="signinBtn" class="signin-btn">Sign In</button>
+  <div class="profile hidden" id="profileBox">
+    <div class="avatar" id="avatarLetter"></div>
+  </div>
+</div>
+</nav>
+
+
+<!-- HERO SECTION -->
+<section class="present-hero">
+
+<h1>Artificial Intelligence Today</h1>
+
+<p>
+Explore how AI is transforming industries, powering modern technology,
+and shaping the world around us.
+</p>
+
+</section>
+
+
+<!-- AI SECTOR LAYOUT -->
+<section class="present-layout">
+
+<div class="left-panel">
+
+<div class="ai-card" onclick="showInfo('healthcare')">🏥 Healthcare AI</div>
+<div class="ai-card" onclick="showInfo('finance')">💳 Finance AI</div>
+<div class="ai-card" onclick="showInfo('transport')">🚗 Transportation AI</div>
+<div class="ai-card" onclick="showInfo('generative')">🎨 Generative AI</div>
+<div class="ai-card" onclick="showInfo('robotics')">🤖 Robotics</div>
+<div class="ai-card" onclick="showInfo('cyber')">🔐 Cybersecurity</div>
+<div class="ai-card" onclick="showInfo('education')">📚 Education</div>
+<div class="ai-card" onclick="showInfo('agriculture')">🌾 Agriculture</div>
+<div class="ai-card" onclick="showInfo('retail')">🛒 Retail</div>
+<!-- <div class="ai-card" onclick="showInfo('space')">🚀 Space & Defense</div> -->
+
+</div>
+
+
+<div class="right-panel">
+
+<img id="ai-image">
+
+<video id="ai-video" controls autoplay muted loop style="display:none;">
+<source src="healtcare-ai.mp4" type="video/mp4">
+</video>
+
+<h2 id="ai-title">AI Domain</h2>
+
+<p id="info-text">
+Click a domain on the left to explore how AI is being used today.
+</p>
+
+</div>
+
+</section>
+
+
+<!-- AI TOOLS -->
+<section class="ai-tools">
+
+  <div class="hex-container">
+    
+    <h2>AI Tools</h2>
+
+    <div class="hex-grid">
+      <div class="tool-card c1" onclick="openTool('chatgpt')">
+        <h3>ChatGPT</h3>
+        <p>Click to explore this AI tool</p>
+      </div>
+      
+
+<div class="tool-card c2" onclick="openTool('midjourney')">
+<h3>Midjourney</h3>
+<p>Click to explore this AI tool</p>
+</div>
+
+<div class="tool-card c3" onclick="openTool('copilot')">
+<h3>GitHub Copilot</h3>
+<p>Click to explore this AI tool</p>
+</div>
+
+<div class="tool-card c4" onclick="openTool('gemini')">
+<h3>Google Gemini</h3>
+<p>Click to explore this AI tool</p>
+</div>
+
+<div class="tool-card c5" onclick="openTool('stable')">
+<h3>Stable Diffusion</h3>
+<p>Click to explore this AI tool</p>
+</div>
+
+<div class="tool-card c6" onclick="openTool('claude')">
+<h3>Claude AI</h3>
+<p>Click to explore this AI tool</p>
+</div>
+
+</div>
+</div>
+
+</section>
+
+
+<!-- AI IMPACT -->
+<section class="ai-impact">
+
+<h2>AI Around You</h2>
+
+<div class="impact-grid">
+
+<div class="impact-card">
+<h3>🎬 Netflix</h3>
+<p>AI recommends movies based on viewing behavior.</p>
+</div>
+
+<div class="impact-card">
+<h3>🚗 Tesla</h3>
+<p>Self-driving technology powered by neural networks.</p>
+</div>
+
+<div class="impact-card">
+<h3>🛒 Amazon</h3>
+<p>AI predicts what you might buy next.</p>
+</div>
+
+<div class="impact-card">
+<h3>🏥 Healthcare</h3>
+<p>AI detects diseases from medical scans.</p>
+</div>
+</div>
+
+</section>
+
+
+<section class="ai-stats">
+
+<h2>AI by the Numbers</h2>
+
+<div class="stats-grid">
+
+<div class="stat-card">
+<h3 class="counter" data-target="500">0</h3>
+<p>AI Market Value (Billions $)</p>
+</div>
+
+<div class="stat-card">
+<h3 class="counter" data-target="97">0</h3>
+<p>Million AI Jobs Expected</p>
+</div>
+
+<div class="stat-card">
+<h3 class="counter" data-target="77">0</h3>
+<p>% Companies Using AI</p>
+</div>
+
+<div class="stat-card">
+<h3 class="counter" data-target="1000">0</h3>
+<p>Million Daily AI Users</p>
+</div>
+
+</div>
+
+</section>
+
+<footer>
+<p>© 2026 TimeHop</p>
+</footer>
+
+
+<script src="script.js"></script>
+<div id="loginModal" class="login-modal hidden">
+
+<div class="login-box">
+
+<input id="loginName" placeholder="Name">
+<input id="loginEmail" placeholder="Email">
+
+<select id="loginGender">
+<option value="">Gender</option>
+<option>Male</option>
+<option>Female</option>
+</select>
+
+<textarea id="loginBio" placeholder="Bio"></textarea>
+
+<button id="createAccount" class="btn">Create Account</button>
+
+</div>
+</div>
+<div id="authContainer"></div>
+
+
+</body>
+</html>

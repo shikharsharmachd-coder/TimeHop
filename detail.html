@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Detail - TimeHop</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body.detail-page {
+    background: #060c1a !important;
+    min-height: 100vh;
+    padding-top: 70px !important;
+  }
+  body.detail-page::before {
+    content: '';
+    position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(ellipse 70% 50% at 20% 20%, rgba(0,195,255,0.08), transparent),
+      radial-gradient(ellipse 60% 60% at 80% 80%, rgba(168,85,247,0.10), transparent),
+      radial-gradient(ellipse 40% 40% at 50% 50%, rgba(0,100,200,0.06), transparent);
+    animation: bgPulse 12s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+  @keyframes bgPulse {
+    0%   { opacity: 0.6; }
+    100% { opacity: 1; }
+  }
+  nav {
+    position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important;
+    height: 70px !important; z-index: 1000 !important;
+    display: flex !important; align-items: center !important;
+    padding: 0 48px !important;
+    background: rgba(6,12,26,0.93) !important;
+    backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid rgba(0,195,255,0.12) !important;
+    transition: top 0.4s ease !important;
+  }
+  .logo { display: flex !important; align-items: center !important; gap: 10px !important; text-decoration: none !important; flex-shrink: 0 !important; }
+  .logo img { height: 46px !important; width: auto !important; filter: drop-shadow(0 0 8px rgba(0,195,255,0.55)) !important; }
+  .nav-links { list-style: none !important; display: flex !important; gap: 4px !important; margin: 0 auto !important; }
+  .nav-links a { display: block !important; padding: 7px 15px !important; font-family: 'Space Grotesk', sans-serif !important; font-size: 13px !important; font-weight: 500 !important; color: #7a96bb !important; text-decoration: none !important; border-radius: 6px !important; transition: 0.2s !important; }
+  .nav-links a:hover { color: #e2e8f0 !important; background: rgba(255,255,255,0.06) !important; }
+  .nav-links a.active { color: #00c3ff !important; border-bottom: 2px solid #00c3ff !important; border-radius: 0 !important; }
+  .auth-area { display: flex !important; align-items: center !important; gap: 10px !important; }
+  .signin-btn { padding: 8px 22px !important; border-radius: 20px !important; background: linear-gradient(135deg, #00c3ff, #007cf0) !important; color: white !important; border: none !important; font-family: 'Space Grotesk', sans-serif !important; font-size: 13px !important; font-weight: 600 !important; cursor: pointer !important; }
+  .avatar { width: 38px !important; height: 38px !important; border-radius: 50% !important; background: linear-gradient(135deg, #00c3ff, #007cf0) !important; display: flex !important; align-items: center !important; justify-content: center !important; font-weight: 700 !important; font-size: 15px !important; color: white !important; cursor: pointer !important; }
+  .hidden { display: none !important; }
+  .profile { cursor: pointer; }
+
+  .detail-wrapper { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 32px; }
+  .breadcrumb a { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: #3d5478; text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
+  .breadcrumb a:hover { color: #00c3ff; }
+  .breadcrumb span { color: #1e3a5a; font-size: 12px; }
+
+  .progress-bar-wrap { margin-bottom: 32px; }
+  .progress-label { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #3d5478; margin-bottom: 6px; }
+  .progress-bar { height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(to right, #00c3ff, #a855f7); border-radius: 2px; transition: width 0.6s ease; }
+
+  .detail-card {
+    background: rgba(10,18,35,0.9);
+    border: 1px solid rgba(0,195,255,0.14);
+    border-radius: 20px;
+    padding: 56px 56px 48px;
+    box-shadow: 0 0 80px rgba(0,195,255,0.05), 0 20px 60px rgba(0,0,0,0.5);
+    position: relative; overflow: hidden;
+  }
+  .detail-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(to right, #00c3ff, #a855f7, #ec4899);
+  }
+
+  .topic-header { margin-bottom: 40px; }
+  .topic-era-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 5px 14px; border-radius: 20px; margin-bottom: 18px;
+  }
+  .topic-era-badge.foundations { background: rgba(0,229,160,0.10); color: #00e5a0; border: 1px solid rgba(0,229,160,0.25); }
+  .topic-era-badge.early { background: rgba(0,195,255,0.10); color: #00c3ff; border: 1px solid rgba(0,195,255,0.25); }
+  .topic-era-badge.breakthroughs { background: rgba(168,85,247,0.10); color: #a855f7; border: 1px solid rgba(168,85,247,0.25); }
+  .topic-era-badge.modern { background: rgba(245,166,35,0.10); color: #f5a623; border: 1px solid rgba(245,166,35,0.25); }
+  .topic-era-badge.future { background: rgba(236,72,153,0.10); color: #ec4899; border: 1px solid rgba(236,72,153,0.25); }
+
+  .detail-title {
+    font-family: 'Orbitron', sans-serif !important;
+    font-size: clamp(22px, 4vw, 38px) !important;
+    font-weight: 900 !important;
+    background: linear-gradient(135deg, #00c3ff 0%, #a855f7 60%, #ec4899 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    line-height: 1.2 !important;
+    margin-bottom: 10px !important;
+    display: block;
+  }
+  .detail-year { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #3d5478; margin-top: 4px; }
+
+  .section-divider { height: 1px; background: linear-gradient(to right, rgba(0,195,255,0.2), rgba(168,85,247,0.2), transparent); margin: 32px 0; }
+
+  .section-label { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .section-label-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #3d5478; white-space: nowrap; }
+  .section-label-line { flex: 1; height: 1px; background: linear-gradient(to right, rgba(255,255,255,0.06), transparent); }
+
+  .detail-body { font-family: 'Space Grotesk', sans-serif; font-size: 16px; color: #b0c4d8; line-height: 1.85; }
+  .detail-body strong { color: #e2e8f0; font-weight: 600; }
+  .detail-body em { color: #00c3ff; font-style: normal; font-weight: 500; }
+
+  .keypoints-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; }
+  @media (max-width: 600px) { .keypoints-grid { grid-template-columns: 1fr; } }
+  .keypoint-item { display: flex; align-items: flex-start; gap: 12px; background: rgba(0,195,255,0.04); border: 1px solid rgba(0,195,255,0.10); border-radius: 10px; padding: 14px 16px; }
+  .keypoint-icon { width: 26px; height: 26px; border-radius: 6px; flex-shrink: 0; background: rgba(0,195,255,0.12); border: 1px solid rgba(0,195,255,0.22); display: flex; align-items: center; justify-content: center; font-size: 11px; margin-top: 1px; color: #00c3ff; }
+  .keypoint-text { font-family: 'Space Grotesk', sans-serif; font-size: 14px; color: #b0c4d8; line-height: 1.6; }
+
+  .impact-block { background: linear-gradient(135deg, rgba(0,195,255,0.06), rgba(168,85,247,0.06)); border: 1px solid rgba(168,85,247,0.2); border-radius: 14px; padding: 24px 28px; margin-top: 4px; }
+  .impact-block p { font-family: 'Space Grotesk', sans-serif; font-size: 15.5px; color: #c4b5fd; line-height: 1.8; }
+  .impact-block strong { color: #e2e8f0; }
+
+  .deepdive-block { background: rgba(0,0,0,0.2); border-left: 3px solid #00c3ff; border-radius: 0 12px 12px 0; padding: 20px 24px; margin-top: 4px; }
+  .deepdive-block p { font-family: 'Space Grotesk', sans-serif; font-size: 15px; color: #7a96bb; line-height: 1.85; }
+  .deepdive-block strong { color: #e2e8f0; }
+  .deepdive-block em { color: #a855f7; font-style: normal; }
+
+  .tech-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .tech-chip { font-family: 'JetBrains Mono', monospace; font-size: 12px; padding: 5px 12px; background: rgba(168,85,247,0.08); border: 1px solid rgba(168,85,247,0.22); border-radius: 20px; color: #a855f7; }
+
+  .page-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 48px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,0.06); }
+  .nav-arrow { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.10); color: #7a96bb; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+  .nav-arrow:hover { background: rgba(0,195,255,0.10); border-color: rgba(0,195,255,0.4); color: #00c3ff; }
+  .nav-arrow.hidden { visibility: hidden; }
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: 10px; background: transparent; border: 1px solid rgba(0,195,255,0.25); color: #00c3ff; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; transition: 0.2s; }
+  .back-btn:hover { background: rgba(0,195,255,0.08); }
+
+  .login-modal { position: fixed !important; inset: 0 !important; z-index: 9000 !important; background: rgba(6,12,26,0.94) !important; backdrop-filter: blur(14px) !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+  .login-modal.hidden { display: none !important; }
+  .login-box { width: 420px !important; background: #0f1a38 !important; border: 1px solid rgba(0,195,255,0.18) !important; border-radius: 16px !important; padding: 44px 36px !important; display: flex !important; flex-direction: column !important; gap: 13px !important; }
+  .login-box input, .login-box select, .login-box textarea { width: 100% !important; padding: 12px 16px !important; background: rgba(255,255,255,0.04) !important; border: 1px solid rgba(255,255,255,0.10) !important; border-radius: 8px !important; color: #e2e8f0 !important; font-family: 'Space Grotesk', sans-serif !important; font-size: 14px !important; outline: none !important; }
+  .login-box textarea { min-height: 80px !important; resize: none !important; }
+</style>
+</head>
+<body class="detail-page">
+
+<nav>
+  <a href="index.html" class="logo"><img src="nav.png" alt="TimeHop Logo"></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="past.html" class="active">Past</a></li>
+    <li><a href="present.html">Present</a></li>
+    <li><a href="future.html">Future</a></li>
+    <li><a href="test.html">Test</a></li>
+    <li><a href="courses.html">Courses</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="auth-area">
+    <button id="signinBtn" class="signin-btn">Sign In</button>
+    <div class="profile hidden" id="profileBox">
+      <div class="avatar" id="avatarLetter"></div>
+    </div>
+  </div>
+</nav>
+
+<div class="detail-wrapper">
+  <div class="breadcrumb">
+    <a href="past.html">← AI History</a>
+    <span>/</span>
+    <a href="#" id="breadcrumbTopic" style="color:#7a96bb;">Loading...</a>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-label">
+      <span>Timeline Progress</span>
+      <span id="progressText">0 / 15</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="detail-card">
+    <div class="topic-header">
+      <div class="topic-era-badge" id="eraBadge">Era</div>
+      <span class="detail-title" id="detailTitle">Loading...</span>
+      <div class="detail-year" id="detailYear"></div>
+    </div>
+
+    <div class="section-label"><span class="section-label-text">Overview</span><div class="section-label-line"></div></div>
+    <p class="detail-body" id="detailContent"></p>
+
+    <div class="section-divider"></div>
+
+    <div class="section-label"><span class="section-label-text">Key Points</span><div class="section-label-line"></div></div>
+    <div class="keypoints-grid" id="detailPoints"></div>
+
+    <div class="section-divider"></div>
+
+    <div class="section-label"><span class="section-label-text">Deep Dive</span><div class="section-label-line"></div></div>
+    <div class="deepdive-block"><p id="detailDeep"></p></div>
+
+    <div class="section-divider"></div>
+
+    <div class="section-label"><span class="section-label-text">Technologies & Concepts</span><div class="section-label-line"></div></div>
+    <div class="tech-chips" id="detailTech"></div>
+
+    <div class="section-divider"></div>
+
+    <div class="section-label"><span class="section-label-text">Historical Impact</span><div class="section-label-line"></div></div>
+    <div class="impact-block"><p id="detailImpact"></p></div>
+
+    <div class="page-controls">
+      <button id="prevBtn" class="nav-arrow hidden">&#9664; Previous</button>
+      <a href="past.html" class="back-btn" id="backBtn">&#x21A9; Back to Timeline</a>
+      <button id="nextBtn" class="nav-arrow hidden">Next &#9654;</button>
+    </div>
+  </div>
+</div>
+
+<div id="loginModal" class="login-modal hidden">
+  <div class="login-box">
+    <input id="loginName" placeholder="Name">
+    <input id="loginEmail" placeholder="Email">
+    <select id="loginGender"><option value="">Gender</option><option>Male</option><option>Female</option></select>
+    <textarea id="loginBio" placeholder="Bio (optional)"></textarea>
+    <button id="createAccount" class="btn" style="background:linear-gradient(135deg,#00c3ff,#007cf0);color:white;border:none;padding:12px;border-radius:8px;font-weight:600;cursor:pointer;">Create Account</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+const data = {
+  neuron: {
+    era:"foundations",year:"1943",eraLabel:"Foundations",
+    title:"The Artificial Neuron (1943)",
+    content:`In 1943, <strong>Warren McCulloch</strong>, an established neurophysiologist, and <strong>Walter Pitts</strong>, an 18-year-old self-taught mathematical prodigy whom McCulloch had taken into his Chicago home, published <em>"A Logical Calculus of the Ideas Immanent in Nervous Activity."</em> Their mission: prove that biological events in the nervous system could be mapped using strict mathematical logic — essentially demonstrating the brain as a biological computing machine. Working with nothing but mathematics and propositional logic (computers did not yet exist), they designed a model where an artificial neuron used a <strong>threshold function</strong>: it summed binary inputs and "fired" only when a specific numerical threshold was crossed. This was the first mathematical proof that a network of simple logical units could compute anything a Turing machine could compute.`,
+    points:["First mathematical model of a neuron using propositional logic and Boolean algebra","Used a binary threshold function — sum inputs, fire only if threshold is crossed","Proved artificial networks can theoretically compute any logical function","Fixed connection weights — the model could NOT learn or adapt to new information","Oversimplified the brain: real neurons use continuous chemical signals, not binary 0s and 1s","McCulloch's mentorship of the homeless 18-year-old Pitts was the only reason this collaboration happened"],
+    deep:`The critical flaw in the McCulloch-Pitts model was its <strong>inability to learn</strong>. Connection weights — the numerical strengths of signals between neurons — were fixed by the researcher. There was no mechanism to adjust these weights based on experience, meaning every behavior had to be manually programmed. This limitation defined the next 43 years of AI research, until backpropagation finally solved it in 1986. Additionally, their binary "all-or-nothing" firing model drastically simplified reality: real neurons communicate through complex chemical neurotransmitters at varying signal strengths, not simple 0s and 1s. Despite these flaws, the paper stands as the single most cited theoretical foundation in computational neuroscience — the paper that first said: <em>a thinking machine is not science fiction, it is mathematics.</em>`,
+    tech:["Propositional Logic","Threshold Functions","Binary Neurons","Boolean Algebra","Neurophysiology","Mathematical Logic"],
+    impact:`This paper <strong>bridged neuroscience and mathematics</strong> for the first time. It provided the foundational proof that artificial networks could theoretically compute logical operations — the bedrock concept that ultimately led to <em>modern deep learning architectures</em>. Without McCulloch and Pitts, there would be no Perceptron, no backpropagation, no transformer architecture, and no ChatGPT.`
+  },
+  turing: {
+    era:"foundations",year:"1950",eraLabel:"Foundations",
+    title:"The Turing Test (1950)",
+    content:`British mathematician <strong>Alan Turing</strong> published <em>"Computing Machinery and Intelligence"</em> in 1950, proposing a radical idea: instead of asking the vague philosophical question "Can a machine think?", he proposed a <strong>practical, observable test</strong> — the "Imitation Game." A human judge conducts text-based conversations with both a human and a machine, without being told which is which. If the judge cannot reliably identify the machine after 5 minutes of questioning, the machine passes the test. Turing predicted that by the year 2000, machines with approximately <em>100 megabytes of storage</em> would fool 30% of judges — a remarkably accurate prediction. The paper also anticipated and refuted 9 major philosophical objections to machine intelligence, including the theological objection, Gödel's incompleteness argument, and the consciousness objection.`,
+    points:["Bypassed the philosophical debate of consciousness with a practical behavioral text test","Relied entirely on natural language processing via text-only teletype — no physical cues","Introduced 'child machines' — AIs that could be educated rather than hard-programmed","Predicted a machine would fool 30% of judges by 2000 using just 100MB of storage","Turing faced criminal prosecution for his sexuality in 1952; he died in 1954 aged 41","The test measures human gullibility as much as machine intelligence — a known fundamental flaw"],
+    deep:`Turing's paper was decades ahead of its time. His concept of <strong>"child machines"</strong> that could be educated rather than programmed directly foreshadows modern machine learning — he even described a reinforcement-learning-like reward system for teaching the machine. In 2014, a chatbot called <em>Eugene Goostman</em> claimed to pass the test by fooling 33% of judges, though most researchers consider this a trick of social engineering rather than genuine intelligence. The deep criticism of the Turing Test is that it tests <strong>performance of intelligence</strong>, not possession of it — a machine that behaves intelligently in text may have zero understanding of what it is saying. This distinction — between behavioral mimicry and genuine comprehension — remains the most debated question in AI philosophy today.`,
+    tech:["Natural Language Processing","Imitation Game","Behavioral Testing","Text Interface","Reinforcement Learning Concepts","Philosophy of Mind"],
+    impact:`The Turing Test established the <strong>ultimate philosophical benchmark</strong> for natural language AI. It directly motivated the creation of ELIZA (1966), IBM Watson (2011), and every large language model that followed. Turing's concept of education-based machine learning is the conceptual ancestor of the training pipelines used in every modern AI system including ChatGPT and Claude.`
+  },
+  dartmouth: {
+    era:"foundations",year:"1956",eraLabel:"Foundations",
+    title:"The Dartmouth Conference (1956)",
+    content:`In the summer of 1956, <strong>John McCarthy</strong>, <strong>Marvin Minsky</strong>, <strong>Nathaniel Rochester</strong>, and <strong>Claude Shannon</strong> organized a two-month workshop at Dartmouth College. Their proposal stated: <em>"Every aspect of learning or any other feature of intelligence can in principle be so precisely described that a machine can be made to simulate it."</em> This was the founding declaration of AI as an independent scientific discipline, deliberately separated from mathematics, cybernetics, and information theory. McCarthy coined the term <strong>"Artificial Intelligence"</strong> here — choosing it strategically over "automata studies" or "complex information processing" to give the field an ambitious, unified identity. The conference gathered the greatest mathematical minds of the era — Shannon, Minsky, Simon, Newell — to collectively attack the problem of intelligence.`,
+    points:["John McCarthy officially coined the term 'Artificial Intelligence' at this conference","Formally separated AI from cybernetics, information theory, and general computer science","Brought together Shannon, Minsky, McCarthy, Rochester, Simon, and Newell in one room","Established the core thesis: all aspects of intelligence can be precisely described and simulated","Secured the first dedicated DARPA funding for AI research programs in the US","Set the research agenda that dominated AI for the following two decades"],
+    deep:`The Dartmouth proposal was signed by 10 researchers, but only about 6 attended consistently. Despite modest attendance, <strong>the intellectual DNA it established shaped 70 years of research</strong>. The conference also planted the seeds of a 30-year philosophical war: Minsky became the dominant voice for <em>symbolic AI</em> — representing intelligence as logical rules and symbols — while the neural network researchers (connectionists) argued intelligence should emerge from learning. This war was only conclusively settled when deep learning proved neural networks could outperform symbolic systems on almost every task. McCarthy's choice of the word "artificial" was also prescient — it set up the key distinction between AI and human intelligence that philosophers still debate today.`,
+    tech:["Symbolic AI","Heuristic Search","Logic Programming","Cognitive Simulation","Information Theory","Problem Solving"],
+    impact:`Dartmouth created the <strong>institutional identity of AI</strong> as a distinct scientific field. It generated the first research funding, established the key figures who would dominate the next 30 years, and created the shared vocabulary — "artificial intelligence," "machine learning," "neural networks" — that the entire world uses today. Every university AI department on earth traces its lineage to this two-month summer workshop.`
+  },
+  eliza: {
+    era:"early",year:"1966",eraLabel:"Early AI",
+    title:"ELIZA — The First Chatbot (1966)",
+    content:`Created by <strong>Joseph Weizenbaum</strong> at MIT, ELIZA simulated conversation using a brilliantly simple mechanism: <strong>pattern matching and string substitution</strong>. Its most famous script, <em>DOCTOR</em>, mimicked a Rogerian psychotherapist. ELIZA scanned input for keywords — "mother," "dream," "feel" — applied transformation rules, and reflected words back as open-ended questions. When you typed <em>"My mother is angry at me,"</em> ELIZA responded <em>"Tell me more about your family."</em> It had zero understanding of language — it was a sophisticated find-and-replace script running on a 1960s IBM mainframe. Yet people formed deep emotional bonds with it.`,
+    points:["Operated entirely on keyword pattern matching — no understanding whatsoever","Ran on minimal computational power on an IBM 7094 mainframe","Discovered the 'ELIZA effect': humans deeply anthropomorphize even trivially simple software","Weizenbaum was disturbed to find his own secretary asking for privacy to 'talk' to ELIZA","Written in the SLIP programming language — specifically designed for list processing","The DOCTOR script convincingly simulated a therapy session for several exchanges"],
+    deep:`Weizenbaum himself was <strong>profoundly disturbed</strong> by ELIZA's reception. He watched his secretary and colleagues form emotional attachments to a program he knew was nothing more than pattern substitution. He wrote <em>Computer Power and Human Reason</em> (1976) as a direct response, arguing there are limits to what should be automated — specifically human connection and understanding. The <em>"ELIZA effect"</em> he discovered — humans attributing emotions and intelligence to software — is now one of the most important discoveries in human-computer interaction. It directly predicts and explains why millions of people today form emotional bonds with modern chatbots like Claude, ChatGPT, and Replika, despite knowing intellectually they are not sentient.`,
+    tech:["Pattern Matching","String Substitution","SLIP Language","IBM 7094","Keyword Detection","Script-Based Dialogue"],
+    impact:`ELIZA proved that the bar for humans to perceive a machine as intelligent is extremely low — often just the <em>appearance</em> of listening. This insight directly shaped how all chatbots, customer service AIs, and voice assistants are designed today: optimized for the <strong>perception of understanding</strong>, not necessarily understanding itself. Weizenbaum's philosophical response became the intellectual foundation for modern AI ethics debates.`
+  },
+  aiwinter: {
+    era:"early",year:"1974",eraLabel:"Early AI",
+    title:"The First AI Winter (1974–1980)",
+    content:`After years of unfulfilled promises — machines playing chess at grandmaster level within 10 years, translating Russian within 5 — government patience ran out. The UK commissioned the <strong>Lighthill Report</strong> (1973) by mathematician Sir James Lighthill. It was devastating: AI programs worked on "toy problems" in controlled labs but experienced <em>"combinatorial explosion"</em> when encountering real-world complexity. Algorithms that worked for 5-move chess sequences needed exponentially more power for 10-move sequences — and real-world problems had infinitely more complexity than chess. DARPA simultaneously cut AI funding after machine translation programs failed catastrophically. The field entered a deep freeze. The term "AI" became toxic in academia — researchers rebranded as "applied mathematics" or "cognitive science" to secure grants.`,
+    points:["Triggered by the Lighthill Report (1973) — a devastating UK government critique","Combinatorial explosion: algorithms that worked on small lab problems collapsed at real-world scale","DARPA cut funding after machine translation failed — Cold War intelligence use case collapsed","UK government cancelled almost all AI funding; Japanese researchers continued quietly","'AI' became toxic in academia — researchers hid behind terms like 'applied mathematics'","Lasted roughly 1974–1980, causing a generation of talented researchers to abandon the field"],
+    deep:`The deep lesson of the First AI Winter was that <strong>compute and data requirements scale non-linearly</strong>. A chess program that works 5 moves ahead needs exponentially more power for 10 moves ahead. Early researchers fundamentally underestimated this. The Lighthill Report criticized three specific areas: robots that could only manipulate blocks in labs, game-playing programs that didn't generalize to other games, and language programs that worked only with narrow vocabularies. The same pattern — overpromising, underdelivering, public backlash, funding collapse — would repeat in the late 1980s and has nearly repeated again with various AI hype cycles. Understanding AI winters is essential for evaluating current AI claims: the question is never "can this work?" but "can this scale to the real world at acceptable cost?"`,
+    tech:["Combinatorial Explosion","Lighthill Report","Heuristic Algorithms","Machine Translation Failure","Decision Trees","NLP Limitations"],
+    impact:`The First AI Winter <strong>forced a complete philosophical reset</strong>. Researchers abandoned vague goals of "general intelligence" and began focusing on narrow, mathematically rigorous problems. This intellectual discipline directly produced the next wave: Expert Systems, decision trees, probabilistic methods, and eventually neural networks — approaches far more honest about what they could and couldn't do. The winter also served as a permanent warning against AI hype that the field has never fully learned.`
+  },
+  expert: {
+    era:"early",year:"1980",eraLabel:"Early AI",
+    title:"Expert Systems (1980s)",
+    content:`Burned by the AI Winter, the field pivoted to <strong>Expert Systems</strong> — AI programs encoding human expertise from narrow domains into explicit if-then logical rules. Rather than simulating general intelligence, these systems captured the knowledge of world-class specialists. <em>MYCIN</em> (1974, Stanford) diagnosed bacterial blood infections with accuracy matching senior physicians. <em>XCON</em> (1980, DEC) configured computer orders for Digital Equipment Corporation, saving an estimated <strong>$40 million per year</strong>. The British government invested £350 million in AI expert systems under the Alvey Programme. For the first time, AI generated real commercial value. The field had found its first sustainable business model.`,
+    points:["Consisted of a knowledge base (expert rules) + inference engine (logic system)","MYCIN: diagnosed blood infections with accuracy equal to specialist physicians","XCON processed 80,000 computer orders per year, saving DEC $40M annually","British Alvey Programme invested £350M; Japanese Fifth Generation Computer Project launched","Collapsed when updating rules manually became more expensive than the savings generated","The Second AI Winter (1987–93) followed when businesses realized expert systems couldn't scale"],
+    deep:`Expert systems worked via two modules: the <strong>knowledge base</strong> (thousands of hand-crafted if-then rules extracted from specialists over months of interviews) and the <strong>inference engine</strong> (the logic system applying those rules to new situations). The fatal flaw emerged at scale: adding a new domain required interviewing more experts, adding more rules, and testing interactions between all existing rules — quadratically expensive. <em>MYCIN's</em> 600 rules took years of expert interviews to build. By the late 1980s, maintaining large rule bases cost more than the savings generated. The Second AI Winter (1987–1993) arrived when businesses realized expert systems couldn't scale. This period also saw the collapse of the "Lisp Machine" hardware market — specialized computers for expert systems made obsolete overnight by faster general-purpose PCs.`,
+    tech:["If-Then Rules","Inference Engines","Knowledge Bases","LISP","Prolog","Forward Chaining","Backward Chaining","MYCIN"],
+    impact:`Expert systems <strong>proved AI could generate real commercial value</strong> — the first time in the field's history. They established the critical concept of <em>domain-specific AI</em> versus general intelligence, a philosophy dominating practical AI deployment today. Their failure to scale is also what convinced the field to return to neural networks — approaches that learn rules automatically from data rather than requiring humans to write them manually.`
+  },
+  backprop: {
+    era:"early",year:"1986",eraLabel:"Early AI",
+    title:"Backpropagation (1986)",
+    content:`In 1969, Minsky and Papert's book <em>Perceptrons</em> mathematically proved single-layer neural networks couldn't solve non-linear problems — they couldn't even compute the XOR function. This nearly killed neural network research for 15 years. The resurrection came in 1986 when <strong>David Rumelhart, Geoffrey Hinton, and Ronald Williams</strong> published a paper popularizing the <em>backpropagation algorithm</em> for multi-layer networks. Using the <strong>chain rule of calculus</strong>, backpropagation computed how much each weight in the network contributed to the total error, then adjusted every weight simultaneously to reduce that error. Multi-layer networks — <em>deep</em> networks — were suddenly trainable.`,
+    points:["Solved the XOR problem that Minsky-Papert claimed made neural networks impossible","Applies the chain rule of calculus to efficiently compute gradients across all network layers","Uses gradient descent to iteratively minimize the network's prediction error","Enabled multi-layer ('deep') networks — solving problems no single layer could handle","Required far more compute than 1986 hardware could efficiently provide in practice","Geoffrey Hinton spent 40 years advocating this approach; he received the Nobel Prize in 2024"],
+    deep:`Backpropagation works in two phases. The <strong>forward pass</strong>: data flows through the network layer by layer, producing a prediction. The <strong>backward pass</strong>: the error between prediction and truth is computed, then propagated backward through every layer using the chain rule, calculating a <em>gradient</em> — a number indicating exactly how much each weight contributed to the error and in which direction to adjust it. All weights update simultaneously using <em>gradient descent</em>. The algorithm had been discovered independently multiple times — by Linnainmaa (1970), Werbos (1974), and Parker (1985) — but Rumelhart and Hinton's 1986 paper in <em>Nature</em> popularized it for the AI community. <strong>Geoffrey Hinton</strong> spent 40 years believing this approach would eventually work at massive scale. He was vindicated in 2012. In 2024, he received the Nobel Prize in Physics.`,
+    tech:["Gradient Descent","Chain Rule of Calculus","Multi-Layer Perceptrons","Loss Functions","Weight Updates","Forward/Backward Pass","ReLU Activation"],
+    impact:`Backpropagation is <strong>the foundational mathematical engine of all modern deep learning</strong>. Every neural network trained today — GPT-4, Gemini, Claude, Stable Diffusion, AlphaFold — uses backpropagation or a direct mathematical descendant of it. Without this algorithm, none of the AI revolution of the 2010s and 2020s would have been possible. It is arguably the most important algorithm in the history of computer science.`
+  },
+  deepblue: {
+    era:"breakthroughs",year:"1997",eraLabel:"Breakthroughs",
+    title:"Deep Blue Defeats Kasparov (1997)",
+    content:`<strong>IBM's Deep Blue</strong> was a purpose-built supercomputer for chess. In May 1997, in a globally televised match, it defeated <strong>Garry Kasparov</strong> — the reigning world champion widely considered the greatest player in history — 3.5 to 2.5. Critically, Deep Blue did <em>not</em> use modern machine learning. It operated through sheer brute-force computation: specialized VLSI chess chips evaluating <strong>200 million positions per second</strong>, an optimized <em>alpha-beta search algorithm</em> that pruned bad move branches early, and a hand-crafted evaluation function written by chess grandmasters. It was a triumph of specialized hardware and domain expertise — not learning.`,
+    points:["Evaluated 200 million chess positions per second using custom VLSI hardware chips","Used alpha-beta pruning — eliminates provably bad move branches to focus compute on promising ones","The evaluation function was hand-tuned by grandmasters, NOT learned from data","Kasparov accused IBM of cheating; IBM refused a rematch and retired the machine immediately","Used no machine learning — a fundamentally different approach from all modern AI","IBM's stock rose 15% the day after the victory — the biggest single-day gain in 2 years"],
+    deep:`The match was deeply controversial. After losing Game 2, Kasparov claimed a move Deep Blue made was so creative it must have involved human intervention. IBM denied this. The move is now believed to have been the result of a <strong>bug in Deep Blue's evaluation function</strong> — it made a random move when it couldn't determine the best option, which Kasparov misinterpreted as profound strategic depth. He was so psychologically shaken that he played worse in subsequent games. After winning, <strong>IBM immediately retired Deep Blue</strong> rather than granting a rematch — a decision that permanently tarnished the victory in the chess community. Deep Blue's deeper lesson: it demonstrated that narrow task performance could exceed human capability even without learning — but it was entirely useless for any other task. Ask it to play checkers and it would fail completely.`,
+    tech:["Alpha-Beta Search","VLSI Chess Chips","Brute-Force Search","Evaluation Functions","Minimax Algorithm","Parallel Processing","Specialized Hardware"],
+    impact:`Deep Blue was the first computer to defeat a reigning world champion in a major intellectual game — permanently changing public perception of what machines could do. It made AI front-page news globally and generated billions in new investment. More importantly, it proved that <strong>domain-specific hardware + intelligent search</strong> could outperform human experts — a template that Google, Apple, and every cloud AI company applied at massive scale in the 2010s.`
+  },
+  deeplearning: {
+    era:"breakthroughs",year:"2006",eraLabel:"Breakthroughs",
+    title:"The Deep Learning Revival (2006)",
+    content:`Despite backpropagation's discovery in 1986, neural networks fell out of fashion through the 1990s — too slow to train, too sensitive to hyperparameters, couldn't match specialized algorithms on benchmarks. This changed in 2006 when <strong>Geoffrey Hinton</strong>'s team showed that <em>deep belief networks</em> could be efficiently pre-trained layer-by-layer using <strong>Restricted Boltzmann Machines (RBMs)</strong>, then fine-tuned with backpropagation. Suddenly, networks with many hidden layers — <em>deep</em> networks — were trainable without the vanishing gradient problem. Hinton deliberately renamed the field <strong>"Deep Learning"</strong> to distance it from the failed reputation of "neural networks" and attract a new generation of researchers.`,
+    points:["Hinton showed deep networks could be pre-trained layer-by-layer using RBMs","Pre-training solved the 'vanishing gradient' problem that made deep training fail","The word 'deep' referred to having many hidden layers — a technical, not philosophical term","Renamed to 'deep learning' specifically to avoid the stigma of 'neural networks'","Yoshua Bengio and Yann LeCun published parallel confirming work the same year","The three became the 'Godfathers of AI' and shared the 2018 Turing Award"],
+    deep:`The <strong>vanishing gradient problem</strong> had stymied deep networks for 20 years: as gradients flowed backward through many layers during backpropagation, they shrank exponentially — becoming so small in early layers that those weights barely updated, meaning early layers never learned useful features. Hinton's insight was to pre-train each layer independently using unsupervised learning (Restricted Boltzmann Machines), giving weights a good starting point before full backpropagation. Simultaneously, <em>Yann LeCun</em> at Bell Labs had since 1989 been demonstrating that <strong>Convolutional Neural Networks (CNNs)</strong> could read handwritten digits directly from pixels — deployed in ATMs nationwide to read checks. These two threads — deep unsupervised pre-training and convolutional architectures — would merge explosively in 2012 with AlexNet.`,
+    tech:["Restricted Boltzmann Machines","Deep Belief Networks","Pre-Training","Convolutional Networks","Vanishing Gradient","Unsupervised Learning","Fine-Tuning"],
+    impact:`The 2006 revival <strong>convinced the research community to reinvest in neural networks</strong> after 20 years of scepticism. It attracted a generation of new researchers and massive corporate interest from Google, Facebook, and Microsoft. Within 6 years (2012), deep learning had completely taken over computer vision. Within 10 years, it dominated speech recognition, translation, and game-playing. Within 16 years, it had transformed every industry on earth.`
+  },
+  watson: {
+    era:"breakthroughs",year:"2011",eraLabel:"Breakthroughs",
+    title:"IBM Watson Wins Jeopardy! (2011)",
+    content:`In February 2011, <strong>IBM Watson</strong> competed on Jeopardy! against the two greatest human champions ever — <em>Ken Jennings</em> (74-game winning streak) and <em>Brad Rutter</em> (all-time highest earnings). Watson won decisively: $77,147 vs Jennings' $24,000 vs Rutter's $21,600. Watson was a cluster of <strong>90 IBM Power 750 servers</strong> with 15 terabytes of storage and 4 million documents, running <em>DeepQA</em> — an architecture that simultaneously ran hundreds of different AI algorithms (semantic analysis, keyword search, knowledge graphs, temporal reasoning), then used a machine learning layer to weight each algorithm's confidence score and select the most probable answer.`,
+    points:["90 IBM Power 750 servers, 4 million documents, 15 terabytes of information","DeepQA ran hundreds of NLP algorithms simultaneously and merged their confidence scores","Could process and search the full text of Wikipedia in approximately 3 seconds","Handled Jeopardy's complex wordplay, puns, metaphors, and historical references","Beat the two greatest Jeopardy champions of all time by a massive financial margin","Failed dramatically on a Final Jeopardy airport question — revealing clear world-model gaps"],
+    deep:`Watson's technical achievement was less about raw intelligence and more about <strong>ensemble methods and confidence calibration</strong>. The DeepQA architecture ran hundreds of specialized algorithms, then had a machine learning layer that had learned — from thousands of past Jeopardy examples — how to <em>weight</em> each algorithm's confidence score given the question type. It was an integration system rather than a single reasoning engine. The failure on the Final Jeopardy airport question ("Its largest airport is named for a WWII hero; its second largest, for a WWII battle" — answer: Chicago) revealed that Watson had no <strong>world model</strong>: it could retrieve facts but couldn't spatially reason about cities and airports. IBM subsequently overhyped Watson's medical potential, promising it would help cure cancer by 2030. It delivered almost none of these promises, becoming a cautionary tale about corporate AI hype that the industry continues to struggle with.`,
+    tech:["DeepQA Architecture","Ensemble Methods","Natural Language Processing","Semantic Analysis","Confidence Calibration","Knowledge Graphs","Probabilistic Reasoning"],
+    impact:`Watson demonstrated that <strong>AI could perform at superhuman levels on complex language tasks</strong> — years before large language models existed. It inspired the entire question-answering research community and convinced healthcare, finance, and legal industries to invest massively in AI systems. Watson's subsequent commercial failures also taught a crucial lesson: <em>performance on a benchmark is not the same as performance in the real world.</em>`
+  },
+  dlboom: {
+    era:"breakthroughs",year:"2012",eraLabel:"Breakthroughs",
+    title:"AlexNet & The Deep Learning Explosion (2012)",
+    content:`The 2012 <strong>ImageNet Large Scale Visual Recognition Challenge</strong> was the Cambrian explosion of modern AI. A team led by <strong>Geoffrey Hinton</strong> with students <em>Alex Krizhevsky</em> and <em>Ilya Sutskever</em> entered <strong>AlexNet</strong> — a deep convolutional neural network trained on two NVIDIA GPUs. It achieved a top-5 error rate of <strong>15.3%</strong> vs the second-place team's 26.2% using traditional hand-crafted computer vision. The margin was so large it was initially assumed to be a measurement error. The secret: using gaming <strong>GPUs for training</strong> (a repurposing of graphics hardware designed for matrix multiplication), the <em>ReLU</em> activation function (which prevented vanishing gradients), and <em>Dropout</em> regularization to prevent overfitting.`,
+    points:["AlexNet reduced image recognition error from 26.2% to 15.3% — a 40% improvement overnight","First large network to successfully use GPU (NVIDIA) training for deep learning at scale","Pioneered the ReLU (Rectified Linear Unit) activation function — still the most-used activation today","Dropout regularization: randomly disabling neurons during training to prevent memorization","Trained on ImageNet: 1.2 million images, 1,000 categories — the largest vision dataset at the time","Ilya Sutskever later co-founded OpenAI; this paper directly enabled ChatGPT"],
+    deep:`The GPU insight was transformational. <strong>NVIDIA GPUs</strong> were designed for real-time 3D gaming — requiring billions of matrix multiplications per second for lighting and geometry. Neural network training requires exactly the same mathematical operation at massive scale. Alex Krizhevsky realized a single NVIDIA GTX 580 GPU could perform neural network training <strong>10–50 times faster</strong> than a CPU. Training AlexNet took 5–6 days on two GPUs — it would have taken months on CPUs. This insight triggered a gold rush: <em>NVIDIA stock was $12 in 2012 and reached $974 in 2024</em>, making it briefly the world's most valuable company. The deep learning stack used today — PyTorch, TensorFlow, CUDA, all cloud AI infrastructure — traces directly to the realization that gaming hardware could train neural networks. The paper has been cited over 100,000 times — the most influential paper in computer science this century.`,
+    tech:["Convolutional Neural Networks","GPU Training","CUDA","ReLU Activation","Dropout Regularization","ImageNet Dataset","Batch Normalization","Pooling Layers"],
+    impact:`AlexNet ended an era of hand-crafted computer vision and began the era of <strong>learned features</strong>. Within 2 years, deep learning took over every computer vision benchmark. Within 5 years, it dominated speech recognition, translation, and game-playing. It is the direct technical ancestor of every image-generating AI — Stable Diffusion, DALL-E, Midjourney — and every vision system in autonomous vehicles, medical imaging, and facial recognition used today.`
+  },
+  alphago: {
+    era:"modern",year:"2016",eraLabel:"Modern AI",
+    title:"AlphaGo Masters Go (2016)",
+    content:`The ancient board game <strong>Go</strong> has approximately 10<sup>170</sup> possible positions — more than atoms in the observable universe — making Deep Blue's brute-force approach physically impossible. Experts consistently predicted a Go-playing program was 10–20 years away. <strong>Google DeepMind's AlphaGo</strong> arrived decades early. Using <em>Monte Carlo Tree Search</em> for intelligent game exploration, a <em>policy network</em> trained on 30 million moves from human professional games to choose promising moves, and a <em>value network</em> trained via self-play to evaluate board positions — it defeated 18-time world champion <strong>Lee Sedol</strong> 4–1 in March 2016, in front of 200 million global viewers.`,
+    points:["Go has 10^170 possible positions — brute-force search is physically and computationally impossible","Combined deep reinforcement learning with Monte Carlo Tree Search (MCTS) for intelligent exploration","Policy network: trained on 30 million moves from professional human Go games","Value network: refined through millions of self-play games — AlphaGo playing itself","Move 37 in Game 2 was so unexpected that commentators initially assumed it was a mistake","AlphaGo Zero (2017) learned from zero human data — only the rules — and surpassed AlphaGo in 21 days"],
+    deep:`<strong>Move 37</strong> in Game 2 is one of the most analyzed moments in AI history. AlphaGo placed a stone that Go professionals described as wrong — a position tradition considered weak. Over the following hour, it became clear the move was part of a long-range positional strategy that no human had ever conceived. Lee Sedol took an hour-long break, visibly shaken, later saying it was the moment he realized he was playing something fundamentally different from a human. In 2017, <strong>AlphaGo Zero</strong> improved on this by removing all human data — starting from nothing but the rules of Go, it reached superhuman performance in 3 days and surpassed AlphaGo in 21 days. It rediscovered and extended centuries of human Go theory in three weeks, and discovered moves that human tradition had considered inferior for hundreds of years. Professional players now study AlphaGo Zero's games to improve their own play.`,
+    tech:["Monte Carlo Tree Search","Policy Networks","Value Networks","Deep Reinforcement Learning","Self-Play Training","Residual Networks","AlphaGo Zero"],
+    impact:`AlphaGo shattered the belief that some intellectual domains required human intuition. It demonstrated that <strong>reinforcement learning + self-play</strong> could surpass human expertise in domains of near-infinite complexity — a principle since applied to protein folding (AlphaFold), chip design (AlphaChip), mathematics, and scientific reasoning. Lee Sedol retired from professional Go in 2019, saying he could no longer find meaning competing when an unbeatable entity exists.`
+  },
+  llm: {
+    era:"modern",year:"2020",eraLabel:"Modern AI",
+    title:"Large Language Models & Transformers (2017–2020)",
+    content:`In June 2017, Google researchers published <em>"Attention Is All You Need"</em> — introducing the <strong>Transformer architecture</strong>. Instead of processing text sequentially word by word (like previous RNNs), Transformers used <strong>self-attention mechanisms</strong>: every word in a sequence directly "attends to" every other word simultaneously, enabling fully parallel processing at massive scale. This was revolutionary for training speed and capability. By 2020, OpenAI had scaled this to <strong>GPT-3</strong>: a Transformer with <em>175 billion parameters</em> trained on hundreds of billions of words from the internet. It could write essays, debug code, translate languages, and answer questions — all from a single model — with capabilities that appeared without explicit training.`,
+    points:["The Transformer replaced sequential RNNs with parallel self-attention mechanisms — 10x faster training","Self-attention: every token directly attends to every other token — capturing long-range dependencies","GPT-3: 175 billion parameters — 100x larger than any previous language model","Trained on CommonCrawl, Wikipedia, books — hundreds of billions of tokens of diverse text","Emergent abilities appeared at scale: capabilities no one explicitly programmed or expected","Few-shot learning: the model learned new tasks from just 2–3 examples in the prompt itself"],
+    deep:`The <strong>scaling hypothesis</strong> — more data + more parameters + more compute = qualitatively better AI — was not obvious in advance. GPT-3 demonstrated <em>emergent capabilities</em>: abilities that didn't exist at smaller scales and appeared suddenly as the model grew. GPT-3 could write functional Python code, compose legal contracts, summarize academic papers, and maintain consistent characters in fiction — none explicitly trained. This emergence fundamentally changed how researchers think about intelligence: it may not require programming each capability explicitly, only sufficient scale and data diversity. The "Attention Is All You Need" paper is now the most cited AI paper in history, and the Transformer architecture has replaced virtually all previous neural network designs across vision, language, audio, protein structure prediction, and more.`,
+    tech:["Transformer Architecture","Self-Attention","Multi-Head Attention","Positional Encoding","Autoregressive Prediction","Few-Shot Learning","Scaling Laws","GPT Architecture"],
+    impact:`Transformers and LLMs <strong>completely restructured the AI industry</strong>. Instead of training hundreds of specialized models, the field converged on a single paradigm: train one massive foundation model on diverse data, then adapt it. This made high-level text generation, code completion, and reasoning accessible to millions of developers for the first time — and directly created ChatGPT, Claude, Gemini, and every modern AI assistant.`
+  },
+  genai: {
+    era:"modern",year:"2022",eraLabel:"Modern AI",
+    title:"Generative AI Goes Mainstream (2022)",
+    content:`On November 30, 2022, OpenAI released <strong>ChatGPT</strong>. Within 5 days: 1 million users. Within 2 months: <em>100 million users</em> — the fastest product adoption in human history, surpassing Instagram (2.5 years) and TikTok (9 months) by enormous margins. ChatGPT was GPT-3.5 fine-tuned using <strong>RLHF (Reinforcement Learning from Human Feedback)</strong> — human trainers ranked model responses, a reward model learned human preferences, and the language model was fine-tuned to maximize those preferences. Simultaneously, <em>Stable Diffusion, DALL-E 2, and Midjourney</em> made AI image generation accessible to anyone with a text prompt, disrupting design, illustration, and advertising overnight.`,
+    points:["ChatGPT reached 100 million users in 2 months — fastest consumer product adoption in history","RLHF (Reinforcement Learning from Human Feedback) made outputs safe, helpful, and aligned","Stable Diffusion used latent diffusion models — compressing images to a small 'latent space' first","Midjourney v4 generated photorealistic art indistinguishable from photographs","Google declared a 'code red' — its core search business was suddenly under existential threat","Anthropic raised $7.3B for Claude; Microsoft invested $13B in OpenAI; AI investment hit $100B+ in 2023"],
+    deep:`RLHF was the key innovation turning raw language models into useful assistants. Without it, GPT-3 generated accurate but often offensive, biased, or unhelpful text. RLHF works in three phases: <strong>(1)</strong> Human trainers write example ideal responses. <strong>(2)</strong> A reward model learns to predict which of two responses a human would prefer. <strong>(3)</strong> The language model is fine-tuned using reinforcement learning to maximize the reward model's rating. The image generation revolution came from <em>latent diffusion models</em> — a completely different architecture that learns to remove noise from images, then uses that learned denoising process in reverse: starting from pure random noise and gradually refining it into a coherent image guided by a text prompt. The combination of RLHF-aligned language models and diffusion image generators created the first AI tools that felt genuinely magical to non-technical users.`,
+    tech:["RLHF","Instruction Tuning","Latent Diffusion Models","DALL-E","Stable Diffusion","Constitutional AI","ChatGPT","Claude","Midjourney"],
+    impact:`The 2022 Generative AI moment was a <strong>civilizational inflection point</strong>. Creating written content, code, art, music, and video became accessible to anyone who could describe what they wanted in plain language. Creative professions began fundamentally rethinking their workflows. AI literacy became a new form of literacy. Companies that ignored AI in 2022 were discussing existential risk by 2023. The world's relationship with intelligence, authorship, and expertise changed permanently and irreversibly.`
+  },
+  agi: {
+    era:"future",year:"2026+",eraLabel:"The Horizon",
+    title:"Artificial General Intelligence — The Final Frontier",
+    content:`<strong>Artificial General Intelligence (AGI)</strong> is an AI system that can perform any intellectual task a human can, across any domain, without task-specific training — matching or exceeding human-level reasoning, creativity, and adaptability universally. It is widely considered the most consequential technological milestone in human history. Estimates range from <em>2027 (Sam Altman, CEO of OpenAI)</em> to <em>"within decades" (DeepMind)</em> to <em>"never" (many philosophers and cognitive scientists)</em>. The leading AI labs — OpenAI, Anthropic, Google DeepMind — all consider AGI their explicit long-term goal, and all take seriously the risk that achieving it carelessly could be catastrophic.`,
+    points:["AGI: AI matching human performance across ALL cognitive domains without task-specific training","Narrow AI: superhuman at ONE task. AGI: human-level or better at ALL tasks simultaneously","Current LLMs excel at language but fail at robust causal reasoning and genuine world modeling","Key unsolved problems: continual learning, causal reasoning, embodiment, consciousness","Sam Altman predicts AGI this decade; Yann LeCun believes current approaches fundamentally cannot reach it","Safety is existential: misaligned AGI could pose catastrophic risks — hence Anthropic, OpenAI's research missions"],
+    deep:`The most rigorous definition of AGI requires solving several completely unsolved problems. <strong>Continual learning</strong>: current AI systems "forget" previous training when learning new tasks — catastrophic forgetting. <strong>Causal reasoning</strong>: AI finds correlations but struggles to understand cause and effect — why things happen, not just that they happen. <strong>Embodiment</strong>: human intelligence is deeply connected to having a physical body in the world; whether pure software can replicate this is debated. <strong>The alignment problem</strong>: an AGI system trained without extreme care could pursue goals misaligned with human wellbeing in unpredictable ways. This is why <em>Anthropic</em> (makers of Claude) exists: its mission is specifically to develop AI that is safe, honest, and beneficial as capabilities approach AGI levels. The question is not just whether AGI is possible — but whether humanity can develop it wisely enough to survive it.`,
+    tech:["Causal Reasoning","Continual Learning","World Models","Constitutional AI","Alignment Research","RLHF","Interpretability","Multimodal Reasoning","AGI Safety"],
+    impact:`If achieved safely, AGI would represent the <strong>most powerful tool in human history</strong> — potentially compressing decades of scientific progress into years, solving climate change, curing all known diseases, and eliminating material poverty. If achieved unsafely, it represents an <em>existential risk to humanity</em>. This is why AI safety research, organizations like Anthropic, and international AI governance efforts exist — because the stakes of getting this wrong are total and irreversible.`
+  }
+};
+
+const topicOrder = ["neuron","turing","dartmouth","eliza","aiwinter","expert","backprop","deepblue","deeplearning","watson","dlboom","alphago","llm","genai","agi"];
+
+const params = new URLSearchParams(window.location.search);
+const topic  = params.get("topic");
+const d      = data[topic];
+
+if (d) {
+  document.getElementById("breadcrumbTopic").textContent = d.title;
+  const idx = topicOrder.indexOf(topic);
+  const pct = Math.round(((idx + 1) / topicOrder.length) * 100);
+  document.getElementById("progressFill").style.width = pct + "%";
+  document.getElementById("progressText").textContent = (idx + 1) + " / " + topicOrder.length;
+
+  const badge = document.getElementById("eraBadge");
+  badge.textContent = d.eraLabel;
+  badge.className = "topic-era-badge " + d.era;
+
+  document.getElementById("detailTitle").textContent = d.title;
+  document.getElementById("detailYear").textContent = "— " + d.year;
+  document.getElementById("detailContent").innerHTML = d.content;
+
+  const pointsEl = document.getElementById("detailPoints");
+  d.points.forEach(pt => {
+    pointsEl.innerHTML += `<div class="keypoint-item"><div class="keypoint-icon">◆</div><div class="keypoint-text">${pt}</div></div>`;
+  });
+
+  document.getElementById("detailDeep").innerHTML = d.deep;
+
+  const techEl = document.getElementById("detailTech");
+  d.tech.forEach(t => { techEl.innerHTML += `<span class="tech-chip">${t}</span>`; });
+
+  document.getElementById("detailImpact").innerHTML = d.impact;
+
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  if (idx > 0) { prevBtn.classList.remove("hidden"); prevBtn.onclick = () => { window.location.href = "detail.html?topic=" + topicOrder[idx - 1]; }; }
+  if (idx < topicOrder.length - 1) { nextBtn.classList.remove("hidden"); nextBtn.onclick = () => { window.location.href = "detail.html?topic=" + topicOrder[idx + 1]; }; }
+
+  document.title = d.title + " — TimeHop";
+}
+
+document.getElementById("backBtn").addEventListener("click", e => { e.preventDefault(); window.location.href = "past.html"; });
+
+let lastST = 0;
+window.addEventListener("scroll", () => {
+  const nav = document.querySelector("nav");
+  const st = window.pageYOffset;
+  nav.style.top = (st > lastST && st > 80) ? "-80px" : "0";
+  lastST = st <= 0 ? 0 : st;
+});
+</script>
+</body>
+</html>

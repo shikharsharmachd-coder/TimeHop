@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>Your Profile - TimeHop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<!-- PROFILE SECTION -->
+<section class="profile-container">
+
+<div class="profile-card">
+
+<h1>Your Profile</h1>
+
+<div class="profile-info">
+
+<p><strong>Name:</strong> <span id="profileName"></span></p>
+<p><strong>Email:</strong> <span id="profileEmail"></span></p>
+<p><strong>Gender:</strong> <span id="profileGender"></span></p>
+
+<p><strong>Bio:</strong></p>
+<p id="profileBio"></p>
+
+</div>
+
+<hr>
+
+<h3>Edit Profile</h3>
+
+<input id="editName" placeholder="Update Name">
+
+<textarea id="editBio" placeholder="Update Bio"></textarea>
+
+<button id="updateProfile" class="btn">Update Profile</button>
+
+<button onclick="logout()" class="btn logout-btn">Logout</button>
+
+</div>
+
+</section>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+// LOAD USER DATA
+
+const name = localStorage.getItem("userName");
+const email = localStorage.getItem("userEmail");
+const gender = localStorage.getItem("userGender");
+const bio = localStorage.getItem("userBio");
+
+// SHOW DATA
+
+document.getElementById("profileName").innerText = name || "Not set";
+document.getElementById("profileEmail").innerText = email || "Not set";
+document.getElementById("profileGender").innerText = gender || "Not set";
+document.getElementById("profileBio").innerText = bio || "No bio yet";
+
+// UPDATE PROFILE
+
+document.getElementById("updateProfile").onclick = function(){
+
+const newName = document.getElementById("editName").value;
+const newBio = document.getElementById("editBio").value;
+
+if(newName){
+localStorage.setItem("userName",newName);
+}
+
+if(newBio){
+localStorage.setItem("userBio",newBio);
+}
+
+alert("Profile Updated");
+
+location.reload();
+
+};
+
+});
+
+// LOGOUT
+
+function logout(){
+
+localStorage.clear();
+
+window.location.href="index.html";
+
+}
+
+</script>
+<div id="loginModal" class="login-modal hidden">
+
+<div class="login-box">
+
+<input id="loginName" placeholder="Name">
+<input id="loginEmail" placeholder="Email">
+
+<select id="loginGender">
+<option value="">Gender</option>
+<option>Male</option>
+<option>Female</option>
+</select>
+
+<textarea id="loginBio" placeholder="Bio"></textarea>
+
+<button id="createAccount" class="btn">Create Account</button>
+
+</div>
+</div>
+<div id="authContainer"></div>
+
+
+</body>
+
+</html>

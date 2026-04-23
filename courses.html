@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Courses - TimeHop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 70px; z-index: 1000;
+    display: flex; align-items: center;
+    padding: 0 48px;
+    background: rgba(6,12,26,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0,195,255,0.10);
+    transition: top 0.4s ease;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+  .logo img { height: 46px; width: auto; filter: drop-shadow(0 0 8px rgba(0,195,255,0.55)); }
+  .nav-links { list-style: none; display: flex; gap: 4px; margin: 0 auto; }
+  .nav-links a {
+    display: block; padding: 7px 15px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px; font-weight: 500;
+    color: #7a96bb; text-decoration: none;
+    border-radius: 6px; transition: 0.2s;
+  }
+  .nav-links a:hover { color: #e2e8f0; background: rgba(255,255,255,0.06); }
+  .nav-links a.active { color: #00c3ff; border-bottom: 2px solid #00c3ff; border-radius: 0; }
+  .auth-area { display: flex; align-items: center; gap: 10px; }
+  .signin-btn {
+    padding: 8px 22px; border-radius: 20px;
+    background: linear-gradient(135deg, #00c3ff, #007cf0);
+    color: white; border: none;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: 0.2s;
+  }
+  .signin-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,195,255,0.4); }
+  .avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: linear-gradient(135deg, #00c3ff, #007cf0);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 15px; color: white; cursor: pointer;
+  }
+  .hidden { display: none !important; }
+  .profile { cursor: pointer; }
+
+  /* ── PRICING SECTION ── */
+  .pricing-section {
+    padding: 80px 60px 100px;
+    background: rgba(0,0,0,0.15);
+    position: relative;
+  }
+  .pricing-section::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(to right, transparent, rgba(0,195,255,0.3), transparent);
+  }
+  .pricing-header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .pricing-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: #3d5478; margin-bottom: 14px;
+  }
+  .pricing-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(28px, 4vw, 46px);
+    font-weight: 700;
+    background: linear-gradient(135deg, #00c3ff, #a855f7);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .pricing-sub {
+    font-family: 'Space Grotesk', sans-serif;
+    color: #7a96bb; font-size: 15px; max-width: 480px; margin: 0 auto;
+    line-height: 1.7;
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .plan-card {
+    background: #0c1429;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 20px;
+    padding: 36px 32px;
+    display: flex; flex-direction: column; gap: 20px;
+    position: relative; overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  .plan-card:hover { transform: translateY(-6px); }
+  .plan-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 3px; border-radius: 20px 20px 0 0;
+  }
+  .plan-card.plan-free::before   { background: linear-gradient(to right, #00e5a0, #007cf0); }
+  .plan-card.plan-pro::before    { background: linear-gradient(to right, #00c3ff, #a855f7); }
+  .plan-card.plan-elite::before  { background: linear-gradient(to right, #f5a623, #ec4899); }
+  .plan-card.plan-pro {
+    border-color: rgba(0,195,255,0.28);
+    box-shadow: 0 0 40px rgba(0,195,255,0.10);
+  }
+  .plan-badge {
+    position: absolute; top: 20px; right: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 4px 11px;
+    border-radius: 20px;
+  }
+  .plan-pro .plan-badge {
+    background: rgba(0,195,255,0.15);
+    color: #00c3ff;
+    border: 1px solid rgba(0,195,255,0.3);
+  }
+  .plan-elite .plan-badge {
+    background: rgba(245,166,35,0.15);
+    color: #f5a623;
+    border: 1px solid rgba(245,166,35,0.3);
+  }
+  .plan-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px; font-weight: 700;
+    color: #e2e8f0;
+  }
+  .plan-price {
+    display: flex; align-items: baseline; gap: 4px;
+  }
+  .price-currency {
+    font-size: 20px; font-weight: 600; color: #7a96bb;
+  }
+  .price-amount {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 48px; font-weight: 900; color: #fff; line-height: 1;
+  }
+  .price-period {
+    font-size: 14px; color: #7a96bb;
+  }
+  .plan-card.plan-free .price-amount { color: #00e5a0; }
+  .plan-card.plan-pro  .price-amount { color: #00c3ff; }
+  .plan-card.plan-elite .price-amount { color: #f5a623; }
+  .plan-desc {
+    font-size: 14px; color: #7a96bb; line-height: 1.65;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 16px;
+  }
+  .plan-features {
+    list-style: none; display: flex; flex-direction: column; gap: 11px;
+    flex: 1;
+  }
+  .plan-features li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; color: #b0c4d8; line-height: 1.5;
+  }
+  .plan-features li::before {
+    content: '✓';
+    font-weight: 700; font-size: 13px; flex-shrink: 0; margin-top: 1px;
+  }
+  .plan-card.plan-free .plan-features li::before   { color: #00e5a0; }
+  .plan-card.plan-pro  .plan-features li::before   { color: #00c3ff; }
+  .plan-card.plan-elite .plan-features li::before  { color: #f5a623; }
+  .plan-feature-dim { color: #3d5478 !important; }
+  .plan-feature-dim::before { color: #3d5478 !important; }
+  .plan-cta {
+    display: block; width: 100%;
+    padding: 14px; border-radius: 10px;
+    text-align: center; text-decoration: none;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px; font-weight: 700;
+    cursor: pointer; border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .plan-cta:hover { transform: translateY(-2px); }
+  .plan-card.plan-free  .plan-cta { background: rgba(0,229,160,0.12); color: #00e5a0; border: 1px solid rgba(0,229,160,0.3); }
+  .plan-card.plan-free  .plan-cta:hover { background: rgba(0,229,160,0.22); box-shadow: 0 8px 24px rgba(0,229,160,0.2); }
+  .plan-card.plan-pro   .plan-cta { background: linear-gradient(135deg, #00c3ff, #007cf0); color: #fff; }
+  .plan-card.plan-pro   .plan-cta:hover { box-shadow: 0 8px 24px rgba(0,195,255,0.4); }
+  .plan-card.plan-elite .plan-cta { background: linear-gradient(135deg, #f5a623, #ec4899); color: #fff; }
+  .plan-card.plan-elite .plan-cta:hover { box-shadow: 0 8px 24px rgba(245,166,35,0.35); }
+  .pricing-guarantee {
+    text-align: center; margin-top: 36px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: #3d5478;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<nav>
+<a href="index.html" class="logo">
+  <img src="nav.png" alt="TimeHop Logo">
+</a>
+<ul class="nav-links">
+<li><a href="index.html">Home</a></li>
+<li><a href="past.html">Past</a></li>
+<li><a href="present.html">Present</a></li>
+<li><a href="future.html">Future</a></li>
+<li><a href="test.html">Test</a></li>
+<li><a href="courses.html" class="active">Courses</a></li>
+<li><a href="contact.html">Contact</a></li>
+</ul>
+<div class="auth-area">
+  <button id="signinBtn" class="signin-btn">Sign In</button>
+  <div class="profile hidden" id="profileBox">
+    <div class="avatar" id="avatarLetter"></div>
+  </div>
+</div>
+</nav>
+
+
+<!-- HERO -->
+
+<section class="present-hero">
+
+<h1>AI Learning Courses</h1>
+
+<p>
+Start your journey into Artificial Intelligence.  
+These courses provide a roadmap from beginner to advanced AI skills.
+</p>
+
+</section>
+
+
+<!-- COURSE GRID -->
+
+<section class="courses-section">
+
+<div class="courses-grid">
+
+<div class="course-card">
+
+<h2>AI Fundamentals</h2>
+
+<p>
+Learn what Artificial Intelligence is, how it works,
+and where it is used in real life.
+</p>
+
+<ul>
+<li>History of AI</li>
+<li>AI vs Machine Learning</li>
+<li>Real World AI Applications</li>
+<li>Introduction to Neural Networks</li>
+</ul>
+
+<a href="https://www.youtube.com/results?search_query=ai+fundamentals" target="_blank" class="btn">Start Learning</a>
+
+</div>
+
+
+<div class="course-card">
+
+<h2>Machine Learning</h2>
+
+<p>
+Understand how machines learn from data and make predictions.
+</p>
+
+<ul>
+<li>Supervised Learning</li>
+<li>Unsupervised Learning</li>
+<li>Regression & Classification</li>
+<li>Model Training</li>
+</ul>
+
+<a href="https://www.youtube.com/results?search_query=machine+learning+tutorial" target="_blank" class="btn">Start Learning</a>
+
+</div>
+
+
+<div class="course-card">
+
+<h2>Deep Learning & AI</h2>
+
+<p>
+Explore advanced AI topics like deep learning and neural networks.
+</p>
+
+<ul>
+<li>Deep Neural Networks</li>
+<li>Computer Vision</li>
+<li>Natural Language Processing</li>
+<li>AI Research & Development</li>
+</ul>
+
+<a href="https://www.youtube.com/results?search_query=deep+learning+tutorial" target="_blank" class="btn">Start Learning</a>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- PRICING PLANS -->
+<section class="pricing-section">
+  <div class="pricing-header">
+    <div class="pricing-eyebrow">Choose Your Path</div>
+    <h2 class="pricing-title">Unlock Your AI Journey</h2>
+    <p class="pricing-sub">Start free, upgrade when you're ready. All plans give you access to the TimeHop learning universe.</p>
+  </div>
+
+  <div class="pricing-grid">
+
+    <!-- FREE -->
+    <div class="plan-card plan-free">
+      <div class="plan-name">Starter</div>
+      <div class="plan-price">
+        <span class="price-currency">$</span>
+        <span class="price-amount">0</span>
+        <span class="price-period">/ forever</span>
+      </div>
+      <p class="plan-desc">Everything you need to begin exploring the world of AI — completely free.</p>
+      <ul class="plan-features">
+        <li>Access to AI Fundamentals course</li>
+        <li>Past, Present & Future timeline</li>
+        <li>3 quiz attempts per month</li>
+        <li>Community forum access</li>
+        <li class="plan-feature-dim" style="color:#3d5478;">✗ &nbsp;Certificates</li>
+        <li class="plan-feature-dim" style="color:#3d5478;">✗ &nbsp;AI Tools deep dives</li>
+      </ul>
+      <a href="#" class="plan-cta" onclick="alert('You are already on the Free plan!')">Get Started Free</a>
+    </div>
+
+    <!-- PRO -->
+    <div class="plan-card plan-pro">
+      <span class="plan-badge">Most Popular</span>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price">
+        <span class="price-currency">$</span>
+        <span class="price-amount">9</span>
+        <span class="price-period">/ month</span>
+      </div>
+      <p class="plan-desc">The complete AI learning experience with certificates and unlimited quizzes.</p>
+      <ul class="plan-features">
+        <li>All Starter features</li>
+        <li>All 3 courses — Fundamentals, ML & Deep Learning</li>
+        <li>Unlimited quiz attempts</li>
+        <li>Course completion certificates</li>
+        <li>AI Tools deep-dive articles</li>
+        <li>Priority community support</li>
+      </ul>
+      <a href="contact.html" class="plan-cta">Start Pro — $9/mo</a>
+    </div>
+
+    <!-- ELITE -->
+    <div class="plan-card plan-elite">
+      <span class="plan-badge">Best Value</span>
+      <div class="plan-name">Elite</div>
+      <div class="plan-price">
+        <span class="price-currency">$</span>
+        <span class="price-amount">49</span>
+        <span class="price-period">/ year</span>
+      </div>
+      <p class="plan-desc">Everything in Pro, billed annually. Save over 50% and get exclusive perks.</p>
+      <ul class="plan-features">
+        <li>Everything in Pro</li>
+        <li>Save $59 vs monthly billing</li>
+        <li>Early access to new courses</li>
+        <li>Exclusive AI trend reports</li>
+        <li>1-on-1 monthly Q&amp;A session</li>
+        <li>Lifetime certificate archive</li>
+      </ul>
+      <a href="contact.html" class="plan-cta">Go Elite — $49/yr</a>
+    </div>
+
+  </div>
+
+  <div class="pricing-guarantee">
+    <span>🔒</span>
+    <span>30-day money-back guarantee &nbsp;·&nbsp; No hidden fees &nbsp;·&nbsp; Cancel anytime</span>
+  </div>
+</section>
+
+
+<footer>
+<p>© 2026 TimeHop</p>
+</footer>
+<script src="script.js"></script>
+<div id="loginModal" class="login-modal hidden">
+
+<div class="login-box">
+
+<input id="loginName" placeholder="Name">
+<input id="loginEmail" placeholder="Email">
+
+<select id="loginGender">
+<option value="">Gender</option>
+<option>Male</option>
+<option>Female</option>
+</select>
+
+<textarea id="loginBio" placeholder="Bio"></textarea>
+
+<button id="createAccount" class="btn">Create Account</button>
+
+</div>
+</div>
+
+
+
+</body>
+</html>

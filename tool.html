@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>AI Tool - TimeHop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<nav>
+
+<a href="index.html" class="logo">TimeHop</a>
+
+<ul class="nav-links">
+<li><a href="index.html">Home</a></li>
+<li><a href="past.html">Past</a></li>
+<li><a href="present.html">Present</a></li>
+<li><a href="future.html">Future</a></li>
+<li><a href="test.html">Test</a></li>
+<li><a href="courses.html">Courses</a></li>
+<li><a href="contact.html">Contact</a></li>
+</ul>
+
+</nav>
+
+
+<!-- TOOL PAGE -->
+
+<section class="tool-page">
+
+<h1 id="toolTitle"></h1>
+
+<p id="toolDescription"></p>
+
+<h2>Creator</h2>
+<p id="toolCreator"></p>
+
+<h2>What it is used for</h2>
+<ul id="toolUses"></ul>
+
+<br>
+
+<a id="toolLink" class="btn" target="_blank">
+Open Tool
+</a>
+
+<br><br>
+
+<a href="present.html" class="btn">
+← Back to AI Tools
+</a>
+
+</section>
+
+
+<footer>
+<p>© 2026 TimeHop</p>
+</footer>
+
+
+
+<script>
+
+/* TOOL DATABASE */
+
+const toolData = {
+
+chatgpt:{
+title:"ChatGPT",
+description:"ChatGPT is an AI chatbot developed by OpenAI. It can understand and generate human-like text and assist with writing, coding, research, learning, and problem solving.",
+creator:"OpenAI",
+uses:[
+"Learning new concepts",
+"Writing content",
+"Programming help",
+"Brainstorming ideas",
+"Research assistance"
+],
+link:"https://chat.openai.com"
+},
+
+midjourney:{
+title:"Midjourney",
+description:"Midjourney is an AI image generator that creates detailed artwork and visuals from text prompts.",
+creator:"Midjourney Inc.",
+uses:[
+"AI generated artwork",
+"Concept art",
+"Graphic design inspiration",
+"Creative media production"
+],
+link:"https://www.midjourney.com"
+},
+
+copilot:{
+title:"GitHub Copilot",
+description:"GitHub Copilot is an AI coding assistant that helps developers write code faster by suggesting lines of code and entire functions.",
+creator:"GitHub + OpenAI",
+uses:[
+"Auto code suggestions",
+"Programming help",
+"Debugging assistance",
+"Writing functions quickly"
+],
+link:"https://github.com/features/copilot"
+},
+
+gemini:{
+title:"Google Gemini",
+description:"Gemini is Google's advanced AI model designed for reasoning, coding, writing, and knowledge search.",
+creator:"Google DeepMind",
+uses:[
+"Writing and research",
+"Programming help",
+"AI conversations",
+"Integration with Google services"
+],
+link:"https://gemini.google.com"
+},
+
+stable:{
+title:"Stable Diffusion",
+description:"Stable Diffusion is an open-source AI model used to generate images from text prompts.",
+creator:"Stability AI",
+uses:[
+"AI art creation",
+"Image generation",
+"Game design concepts",
+"Creative visual content"
+],
+link:"https://stability.ai"
+},
+
+claude:{
+title:"Claude AI",
+description:"Claude is an advanced AI assistant built by Anthropic, focused on safe AI and deep reasoning.",
+creator:"Anthropic",
+uses:[
+"Writing assistance",
+"Research and analysis",
+"Programming help",
+"Large document understanding"
+],
+link:"https://claude.ai"
+}
+
+};
+
+
+/* GET TOOL FROM URL */
+
+const params = new URLSearchParams(window.location.search);
+
+const tool = params.get("tool");
+
+
+/* LOAD TOOL DATA */
+
+if(toolData[tool]){
+
+const data = toolData[tool];
+
+document.getElementById("toolTitle").innerText = data.title;
+
+document.getElementById("toolDescription").innerText = data.description;
+
+document.getElementById("toolCreator").innerText = data.creator;
+
+document.getElementById("toolLink").href = data.link;
+
+const list = document.getElementById("toolUses");
+
+data.uses.forEach(use => {
+
+const li = document.createElement("li");
+
+li.innerText = use;
+
+list.appendChild(li);
+
+});
+
+}
+
+</script>
+<div id="loginModal" class="login-modal hidden">
+
+<div class="login-box">
+
+<input id="loginName" placeholder="Name">
+<input id="loginEmail" placeholder="Email">
+
+<select id="loginGender">
+<option value="">Gender</option>
+<option>Male</option>
+<option>Female</option>
+</select>
+
+<textarea id="loginBio" placeholder="Bio"></textarea>
+
+<button id="createAccount" class="btn">Create Account</button>
+
+</div>
+</div>
+<div id="authContainer"></div>
+
+
+</body>
+</html>
