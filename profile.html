@@ -47,53 +47,48 @@
 
 <script>
 
+function getUsers(){ return JSON.parse(localStorage.getItem("th_users")) || []; }
+function saveUsers(u){ localStorage.setItem("th_users", JSON.stringify(u)); }
+
 document.addEventListener("DOMContentLoaded", function(){
 
-// LOAD USER DATA
+  const username = localStorage.getItem("th_currentUser");
 
-const name = localStorage.getItem("userName");
-const email = localStorage.getItem("userEmail");
-const gender = localStorage.getItem("userGender");
-const bio = localStorage.getItem("userBio");
+  if(!username){
+    window.location.href = "auth.html";
+    return;
+  }
 
-// SHOW DATA
+  const users = getUsers();
+  const user = users.find(u => u.username === username);
 
-document.getElementById("profileName").innerText = name || "Not set";
-document.getElementById("profileEmail").innerText = email || "Not set";
-document.getElementById("profileGender").innerText = gender || "Not set";
-document.getElementById("profileBio").innerText = bio || "No bio yet";
+  if(!user){
+    window.location.href = "auth.html";
+    return;
+  }
 
-// UPDATE PROFILE
+  // Show data
+  document.getElementById("profileName").innerText   = user.username || "Not set";
+  document.getElementById("profileEmail").innerText  = user.email    || "Not set";
+  document.getElementById("profileGender").innerText = user.gender   || "Not set";
+  document.getElementById("profileBio").innerText    = user.bio      || "No bio yet";
 
-document.getElementById("updateProfile").onclick = function(){
-
-const newName = document.getElementById("editName").value;
-const newBio = document.getElementById("editBio").value;
-
-if(newName){
-localStorage.setItem("userName",newName);
-}
-
-if(newBio){
-localStorage.setItem("userBio",newBio);
-}
-
-alert("Profile Updated");
-
-location.reload();
-
-};
+  // Update profile
+  document.getElementById("updateProfile").onclick = function(){
+    const newBio = document.getElementById("editBio").value.trim();
+    if(newBio){
+      user.bio = newBio;
+      saveUsers(users);
+      alert("Profile Updated!");
+      location.reload();
+    }
+  };
 
 });
 
-// LOGOUT
-
 function logout(){
-
-localStorage.clear();
-
-window.location.href="index.html";
-
+  localStorage.removeItem("th_currentUser");
+  window.location.href = "index.html";
 }
 
 </script>

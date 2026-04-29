@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sign In / Login - TimeHop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background: #060c1a;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── ANIMATED BACKGROUND ── */
+.bg-glow {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.18;
+  pointer-events: none;
+}
+.bg-glow.g1 {
+  width: 500px; height: 500px;
+  background: #00c3ff;
+  top: -100px; left: -150px;
+  animation: drift1 8s ease-in-out infinite alternate;
+}
+.bg-glow.g2 {
+  width: 400px; height: 400px;
+  background: #a855f7;
+  bottom: -80px; right: -100px;
+  animation: drift2 10s ease-in-out infinite alternate;
+}
+@keyframes drift1 { to { transform: translate(60px, 80px); } }
+@keyframes drift2 { to { transform: translate(-60px, -80px); } }
+
+/* ── LOGO TOP ── */
+.logo-top {
+  position: fixed;
+  top: 24px; left: 40px;
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+  z-index: 10;
+}
+.logo-top img {
+  height: 40px;
+  filter: drop-shadow(0 0 8px rgba(0,195,255,0.5));
+}
+
+/* ── CARD ── */
+.auth-card {
+  background: rgba(12, 20, 41, 0.85);
+  border: 1px solid rgba(0,195,255,0.15);
+  border-radius: 24px;
+  padding: 44px 44px 40px;
+  width: 100%;
+  max-width: 460px;
+  position: relative;
+  z-index: 5;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 0 60px rgba(0,195,255,0.06), 0 24px 80px rgba(0,0,0,0.5);
+}
+
+.auth-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  border-radius: 24px 24px 0 0;
+  background: linear-gradient(90deg, #00c3ff, #a855f7, #00c3ff);
+  background-size: 200%;
+  animation: shimmer 3s linear infinite;
+}
+@keyframes shimmer { to { background-position: 200% center; } }
+
+/* ── TABS ── */
+.tabs {
+  display: flex;
+  background: rgba(255,255,255,0.04);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 32px;
+}
+.tab-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  color: #7a96bb;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+.tab-btn.active {
+  background: linear-gradient(135deg, #00c3ff, #007cf0);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(0,195,255,0.3);
+}
+
+/* ── HEADING ── */
+.auth-heading {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin-bottom: 6px;
+}
+.auth-sub {
+  font-size: 13px;
+  color: #4a6080;
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+
+/* ── FORM ── */
+.form-group {
+  margin-bottom: 18px;
+  position: relative;
+}
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #7a96bb;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: #e2e8f0;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s;
+}
+.form-input:focus {
+  border-color: #00c3ff;
+  background: rgba(0,195,255,0.05);
+  box-shadow: 0 0 0 3px rgba(0,195,255,0.1);
+}
+.form-input.error {
+  border-color: #ef4444;
+  background: rgba(239,68,68,0.05);
+}
+.form-input.success {
+  border-color: #22c55e;
+}
+
+/* ── ERROR / HINT TEXT ── */
+.field-msg {
+  font-size: 11.5px;
+  margin-top: 5px;
+  min-height: 16px;
+  transition: 0.2s;
+}
+.field-msg.err { color: #ef4444; }
+.field-msg.ok  { color: #22c55e; }
+
+/* ── PASSWORD TOGGLE ── */
+.pw-wrap { position: relative; }
+.pw-toggle {
+  position: absolute;
+  right: 14px; top: 50%;
+  transform: translateY(-50%);
+  background: none; border: none;
+  color: #4a6080;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.2s;
+}
+.pw-toggle:hover { color: #00c3ff; }
+
+/* ── SUBMIT BTN ── */
+.auth-submit {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #00c3ff, #007cf0);
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: 0.2s;
+  letter-spacing: 0.03em;
+}
+.auth-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(0,195,255,0.45);
+}
+.auth-submit:active { transform: translateY(0); }
+
+/* ── GLOBAL ERROR ── */
+.global-error {
+  background: rgba(239,68,68,0.12);
+  border: 1px solid rgba(239,68,68,0.35);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #fca5a5;
+  margin-bottom: 20px;
+  display: none;
+}
+.global-success {
+  background: rgba(34,197,94,0.12);
+  border: 1px solid rgba(34,197,94,0.35);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #86efac;
+  margin-bottom: 20px;
+  display: none;
+}
+
+/* ── FORM PANELS ── */
+.form-panel { display: none; }
+.form-panel.active { display: block; }
+
+/* ── DIVIDER ── */
+.divider {
+  text-align: center;
+  margin: 22px 0;
+  color: #2a3a52;
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  position: relative;
+}
+.divider::before, .divider::after {
+  content: '';
+  position: absolute;
+  top: 50%; width: 42%;
+  height: 1px;
+  background: rgba(255,255,255,0.07);
+}
+.divider::before { left: 0; }
+.divider::after  { right: 0; }
+
+/* ── FOOTER NOTE ── */
+.auth-note {
+  text-align: center;
+  font-size: 12px;
+  color: #2a3a52;
+  margin-top: 22px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.auth-note a {
+  color: #00c3ff;
+  text-decoration: none;
+}
+
+/* ── SELECT ── */
+.form-input option {
+  background: #0c1429;
+  color: #e2e8f0;
+}
+
+/* ── STRENGTH BAR ── */
+.strength-bar-wrap {
+  height: 4px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 4px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+.strength-bar {
+  height: 100%;
+  width: 0%;
+  border-radius: 4px;
+  transition: width 0.3s, background 0.3s;
+}
+.strength-label {
+  font-size: 11px;
+  margin-top: 4px;
+  color: #4a6080;
+}
+
+</style>
+</head>
+<body>
+
+<div class="bg-glow g1"></div>
+<div class="bg-glow g2"></div>
+
+<a href="index.html" class="logo-top">
+  <img src="nav.png" alt="TimeHop">
+</a>
+
+<div class="auth-card">
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" id="tabSignup" onclick="switchTab('signup')">Sign Up</button>
+    <button class="tab-btn" id="tabLogin" onclick="switchTab('login')">Login</button>
+  </div>
+
+  <!-- ══ SIGN UP PANEL ══ -->
+  <div class="form-panel active" id="panelSignup">
+    <h2 class="auth-heading">Create Account</h2>
+    <p class="auth-sub">Join TimeHop to track your progress and unlock all features.</p>
+
+    <div class="global-error" id="signupError"></div>
+    <div class="global-success" id="signupSuccess"></div>
+
+    <div class="form-group">
+      <label class="form-label">Username</label>
+      <input class="form-input" id="su_username" type="text" placeholder="e.g. ai_explorer" autocomplete="off" oninput="checkUsername()">
+      <div class="field-msg" id="su_username_msg"></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input class="form-input" id="su_email" type="email" placeholder="you@example.com" oninput="checkEmail()">
+      <div class="field-msg" id="su_email_msg"></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Gender</label>
+      <select class="form-input" id="su_gender">
+        <option value="">Select Gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+        <option value="Prefer not to say">Prefer not to say</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <div class="pw-wrap">
+        <input class="form-input" id="su_password" type="password" placeholder="Min. 6 characters" oninput="checkPasswordStrength()">
+        <button class="pw-toggle" onclick="togglePw('su_password', this)" type="button">👁</button>
+      </div>
+      <div class="strength-bar-wrap"><div class="strength-bar" id="strengthBar"></div></div>
+      <div class="strength-label" id="strengthLabel"></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Confirm Password</label>
+      <div class="pw-wrap">
+        <input class="form-input" id="su_confirm" type="password" placeholder="Repeat password" oninput="checkConfirm()">
+        <button class="pw-toggle" onclick="togglePw('su_confirm', this)" type="button">👁</button>
+      </div>
+      <div class="field-msg" id="su_confirm_msg"></div>
+    </div>
+
+    <button class="auth-submit" onclick="doSignup()">Create Account →</button>
+
+    <div class="auth-note">Already have an account? <a href="#" onclick="switchTab('login')">Login here</a></div>
+  </div>
+
+
+  <!-- ══ LOGIN PANEL ══ -->
+  <div class="form-panel" id="panelLogin">
+    <h2 class="auth-heading">Welcome Back</h2>
+    <p class="auth-sub">Login with your username and password to continue.</p>
+
+    <div class="global-error" id="loginError"></div>
+    <div class="global-success" id="loginSuccess"></div>
+
+    <div class="form-group">
+      <label class="form-label">Username</label>
+      <input class="form-input" id="li_username" type="text" placeholder="Your username" autocomplete="off">
+      <div class="field-msg" id="li_username_msg"></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <div class="pw-wrap">
+        <input class="form-input" id="li_password" type="password" placeholder="Your password"
+               onkeydown="if(event.key==='Enter') doLogin()">
+        <button class="pw-toggle" onclick="togglePw('li_password', this)" type="button">👁</button>
+      </div>
+      <div class="field-msg" id="li_password_msg"></div>
+    </div>
+
+    <button class="auth-submit" onclick="doLogin()">Login →</button>
+
+    <div class="auth-note">Don't have an account? <a href="#" onclick="switchTab('signup')">Sign up free</a></div>
+  </div>
+
+</div><!-- /auth-card -->
+
+
+<script>
+
+/* ══════════════════════════════════
+   HELPERS
+══════════════════════════════════ */
+
+function getUsers(){
+  return JSON.parse(localStorage.getItem("th_users")) || [];
+}
+
+function saveUsers(users){
+  localStorage.setItem("th_users", JSON.stringify(users));
+}
+
+function switchTab(tab){
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".form-panel").forEach(p => p.classList.remove("active"));
+  if(tab === "signup"){
+    document.getElementById("tabSignup").classList.add("active");
+    document.getElementById("panelSignup").classList.add("active");
+  } else {
+    document.getElementById("tabLogin").classList.add("active");
+    document.getElementById("panelLogin").classList.add("active");
+  }
+  clearMessages();
+}
+
+function clearMessages(){
+  document.querySelectorAll(".global-error, .global-success, .field-msg").forEach(el => {
+    el.style.display = "none";
+    el.textContent = "";
+  });
+}
+
+function showErr(id, msg){ 
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = "block";
+}
+
+function setFieldMsg(id, msg, type){
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = "field-msg " + type;
+}
+
+function togglePw(inputId, btn){
+  const input = document.getElementById(inputId);
+  if(input.type === "password"){
+    input.type = "text";
+    btn.textContent = "🙈";
+  } else {
+    input.type = "password";
+    btn.textContent = "👁";
+  }
+}
+
+/* ══════════════════════════════════
+   REAL-TIME VALIDATORS
+══════════════════════════════════ */
+
+function checkUsername(){
+  const val = document.getElementById("su_username").value.trim();
+  const input = document.getElementById("su_username");
+  if(val.length === 0){ setFieldMsg("su_username_msg","",""); input.className="form-input"; return; }
+  if(val.length < 3){ 
+    setFieldMsg("su_username_msg","Username must be at least 3 characters","err");
+    input.className="form-input error"; return;
+  }
+  if(!/^[a-zA-Z0-9_]+$/.test(val)){
+    setFieldMsg("su_username_msg","Only letters, numbers, underscores allowed","err");
+    input.className="form-input error"; return;
+  }
+  const users = getUsers();
+  const taken = users.some(u => u.username.toLowerCase() === val.toLowerCase());
+  if(taken){
+    setFieldMsg("su_username_msg","❌ Username already taken","err");
+    input.className="form-input error";
+  } else {
+    setFieldMsg("su_username_msg","✓ Username available","ok");
+    input.className="form-input success";
+  }
+}
+
+function checkEmail(){
+  const val = document.getElementById("su_email").value.trim();
+  const input = document.getElementById("su_email");
+  if(val.length === 0){ setFieldMsg("su_email_msg","",""); input.className="form-input"; return; }
+  // Must have @ and a proper domain with dot
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  if(!emailRegex.test(val)){
+    setFieldMsg("su_email_msg","Please enter a valid email (e.g. name@gmail.com)","err");
+    input.className="form-input error";
+  } else {
+    setFieldMsg("su_email_msg","✓ Looks good","ok");
+    input.className="form-input success";
+  }
+}
+
+function checkPasswordStrength(){
+  const pw = document.getElementById("su_password").value;
+  const bar = document.getElementById("strengthBar");
+  const label = document.getElementById("strengthLabel");
+  let strength = 0;
+  if(pw.length >= 6)  strength++;
+  if(pw.length >= 10) strength++;
+  if(/[A-Z]/.test(pw)) strength++;
+  if(/[0-9]/.test(pw)) strength++;
+  if(/[^A-Za-z0-9]/.test(pw)) strength++;
+  const pct  = [0, 20, 40, 60, 80, 100][strength];
+  const colors = ["", "#ef4444","#f97316","#eab308","#22c55e","#00c3ff"];
+  const labels = ["","Very Weak","Weak","Fair","Strong","Very Strong"];
+  bar.style.width = pct + "%";
+  bar.style.background = colors[strength] || "transparent";
+  label.textContent = pw.length > 0 ? labels[strength] : "";
+  label.style.color = colors[strength] || "#4a6080";
+  checkConfirm();
+}
+
+function checkConfirm(){
+  const pw  = document.getElementById("su_password").value;
+  const cnf = document.getElementById("su_confirm").value;
+  const input = document.getElementById("su_confirm");
+  if(cnf.length === 0){ setFieldMsg("su_confirm_msg","",""); input.className="form-input"; return; }
+  if(pw === cnf){
+    setFieldMsg("su_confirm_msg","✓ Passwords match","ok");
+    input.className="form-input success";
+  } else {
+    setFieldMsg("su_confirm_msg","Passwords do not match","err");
+    input.className="form-input error";
+  }
+}
+
+/* ══════════════════════════════════
+   SIGN UP
+══════════════════════════════════ */
+
+function doSignup(){
+  const username = document.getElementById("su_username").value.trim();
+  const email    = document.getElementById("su_email").value.trim();
+  const gender   = document.getElementById("su_gender").value;
+  const password = document.getElementById("su_password").value;
+  const confirm  = document.getElementById("su_confirm").value;
+
+  document.getElementById("signupError").style.display = "none";
+
+  // Validations
+  if(!username || !email || !password || !confirm){
+    showErr("signupError", "⚠ Please fill in all required fields.");
+    return;
+  }
+  if(username.length < 3){
+    showErr("signupError", "Username must be at least 3 characters.");
+    return;
+  }
+  if(!/^[a-zA-Z0-9_]+$/.test(username)){
+    showErr("signupError", "Username: only letters, numbers, underscores.");
+    return;
+  }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  if(!emailRegex.test(email)){
+    showErr("signupError", "Please enter a valid email address (e.g. name@gmail.com).");
+    return;
+  }
+  if(password.length < 6){
+    showErr("signupError", "Password must be at least 6 characters.");
+    return;
+  }
+  if(password !== confirm){
+    showErr("signupError", "Passwords do not match.");
+    return;
+  }
+
+  const users = getUsers();
+
+  // Check unique username
+  if(users.some(u => u.username.toLowerCase() === username.toLowerCase())){
+    showErr("signupError", "❌ Username \"" + username + "\" is already taken. Please choose another.");
+    return;
+  }
+
+  // Check unique email
+  if(users.some(u => u.email.toLowerCase() === email.toLowerCase())){
+    showErr("signupError", "An account with this email already exists. Try logging in.");
+    return;
+  }
+
+  // Save new user
+  const newUser = {
+    username: username,
+    email: email,
+    gender: gender,
+    password: password,   // plain text (localStorage only - no server)
+    bio: "",
+    joinedDate: new Date().toLocaleDateString(),
+    testHistory: []
+  };
+  users.push(newUser);
+  saveUsers(users);
+
+  // Set as current logged-in user
+  localStorage.setItem("th_currentUser", username);
+
+  // Show success then redirect
+  const s = document.getElementById("signupSuccess");
+  s.textContent = "🎉 Account created! Redirecting...";
+  s.style.display = "block";
+  setTimeout(() => {
+    const redirect = new URLSearchParams(window.location.search).get("redirect") || "index.html";
+    window.location.href = redirect;
+  }, 1200);
+}
+
+/* ══════════════════════════════════
+   LOGIN
+══════════════════════════════════ */
+
+function doLogin(){
+  const username = document.getElementById("li_username").value.trim();
+  const password = document.getElementById("li_password").value;
+
+  document.getElementById("loginError").style.display = "none";
+
+  if(!username || !password){
+    showErr("loginError", "⚠ Please enter your username and password.");
+    return;
+  }
+
+  const users = getUsers();
+  const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+
+  if(!user){
+    showErr("loginError", "No account found with that username. Please sign up first.");
+    return;
+  }
+
+  if(user.password !== password){
+    showErr("loginError", "Incorrect password. Please try again.");
+    return;
+  }
+
+  // Login success
+  localStorage.setItem("th_currentUser", user.username);
+
+  const s = document.getElementById("loginSuccess");
+  s.textContent = "✓ Login successful! Redirecting...";
+  s.style.display = "block";
+  setTimeout(() => {
+    const redirect = new URLSearchParams(window.location.search).get("redirect") || "index.html";
+    window.location.href = redirect;
+  }, 1000);
+}
+
+/* ══════════════════════════════════
+   AUTO-SWITCH: If URL has ?tab=login
+══════════════════════════════════ */
+window.addEventListener("DOMContentLoaded", () => {
+  const p = new URLSearchParams(window.location.search);
+  if(p.get("tab") === "login") switchTab("login");
+
+  // If already logged in, redirect home
+  const cu = localStorage.getItem("th_currentUser");
+  if(cu){
+    window.location.href = "index.html";
+  }
+});
+
+</script>
+</body>
+</html>

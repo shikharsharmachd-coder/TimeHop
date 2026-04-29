@@ -1,152 +1,64 @@
 /* =====================================================
-   1. INITIALIZATION (PAGE LOAD)
+   1. AUTH SYSTEM (Updated)
+   - Uses th_users array in localStorage
+   - th_currentUser = logged-in username
 ===================================================== */
 
-document.addEventListener("DOMContentLoaded", function () {
+/* ---- Helpers ---- */
 
-    loadUser();
+function getUsers(){
+  return JSON.parse(localStorage.getItem("th_users")) || [];
+}
 
-});
+function getCurrentUser(){
+  const username = localStorage.getItem("th_currentUser");
+  if(!username) return null;
+  return getUsers().find(u => u.username === username) || null;
+}
 
+/* ---- Load Existing User into navbar ---- */
 
-/* =====================================================
-   2. LOGIN / USER SYSTEM
-   - Sign in button
-   - Create account
-   - Load user from localStorage
-===================================================== */
+function loadUser(){
+  const signinBtn   = document.getElementById("signinBtn");
+  const profileBox  = document.getElementById("profileBox");
+  const avatarLetter= document.getElementById("avatarLetter");
 
-let signinBtn, modal, createBtn, profileBox, avatarLetter;
+  const user = getCurrentUser();
+
+  if(user){
+    if(signinBtn)    signinBtn.style.display = "none";
+    if(profileBox)   profileBox.classList.remove("hidden");
+    if(avatarLetter) avatarLetter.innerText = user.username.charAt(0).toUpperCase();
+  } else {
+    if(signinBtn)   signinBtn.style.display = "";
+    if(profileBox)  profileBox.classList.add("hidden");
+  }
+}
+
+/* ---- Wire up navbar buttons on DOMContentLoaded ---- */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    signinBtn = document.getElementById("signinBtn");
-    modal = document.getElementById("loginModal");
-    createBtn = document.getElementById("createAccount");
-    profileBox = document.getElementById("profileBox");
-    avatarLetter = document.getElementById("avatarLetter");
+  loadUser();
 
-    loadUser();
+  const signinBtn  = document.getElementById("signinBtn");
+  const profileBox = document.getElementById("profileBox");
 
-    // SIGN IN CLICK
-    if(signinBtn){
-        signinBtn.onclick = () => {
-            if(modal) modal.classList.remove("hidden");
-        };
-    }
+  // Sign In → go to auth page
+  if(signinBtn){
+    signinBtn.onclick = () => {
+      window.location.href = "auth.html";
+    };
+  }
 
-    // CREATE ACCOUNT
-    if(createBtn){
-        createBtn.onclick = () => {
-
-            const name = document.getElementById("loginName").value;
-            const email = document.getElementById("loginEmail").value;
-            const gender = document.getElementById("loginGender").value;
-            const bio = document.getElementById("loginBio").value;
-
-            if(!name || !email){
-                alert("Please enter Name and Email");
-                return;
-            }
-
-            localStorage.setItem("userName",name);
-            localStorage.setItem("userEmail",email);
-            localStorage.setItem("userGender",gender);
-            localStorage.setItem("userBio",bio);
-
-            if(modal) modal.classList.add("hidden");
-
-            location.reload();
-        };
-    }
-
-    // PROFILE CLICK
-    if(profileBox){
-        profileBox.addEventListener("click",function(){
-            window.location.href="profile.html";
-        });
-    }
+  // Avatar → go to profile
+  if(profileBox){
+    profileBox.addEventListener("click", () => {
+      window.location.href = "profile.html";
+    });
+  }
 
 });
-
-
-/* ---- Load Existing User ---- */
-
-function loadUser(){
-
-const name = localStorage.getItem("userName");
-
-if(name && signinBtn && profileBox && avatarLetter){
-
-signinBtn.style.display = "none";
-
-profileBox.classList.remove("hidden");
-
-avatarLetter.innerText = name.charAt(0).toUpperCase();
-
-if(modal) modal.classList.add("hidden");
-
-}
-
-}
-
-
-/* ---- Open Login Modal ---- */
-
-if(signinBtn && modal){
-
-signinBtn.onclick = () => {
-
-modal.classList.remove("hidden");
-
-};
-
-}
-
-
-/* ---- Create New User ---- */
-
-if(createBtn){
-
-createBtn.onclick = () => {
-
-const name = document.getElementById("loginName").value;
-const email = document.getElementById("loginEmail").value;
-const gender = document.getElementById("loginGender").value;
-const bio = document.getElementById("loginBio").value;
-
-if(!name || !email){
-
-alert("Please enter Name and Email");
-return;
-
-}
-
-localStorage.setItem("userName",name);
-localStorage.setItem("userEmail",email);
-localStorage.setItem("userGender",gender);
-localStorage.setItem("userBio",bio);
-
-if(modal) modal.classList.add("hidden");
-
-location.reload();
-
-};
-
-}
-
-
-/* ---- Redirect to Profile Page ---- */
-
-if(profileBox){
-
-profileBox.addEventListener("click",function(){
-
-window.location.href="profile.html";
-
-});
-
-}
 
 
 /* =====================================================
