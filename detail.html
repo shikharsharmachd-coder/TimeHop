@@ -539,7 +539,7 @@ nav {
     <button class="claude-close" id="claudeClose">✕</button>
   </div>
   <div class="claude-messages" id="claudeMessages">
-    <div class="msg ai">👋 Hi! I'm your AI tutor. Ask me anything about this lesson — I'll explain it in the simplest way possible!</div>
+    <div class="msg ai">👋 Hi! I'm your Claude AI Tutor.<br><br>To activate me, enter your free Anthropic API key — click the 🔑 icon in the top-right of this panel.<br><br>Get one free at <strong>console.anthropic.com</strong> — takes 1 minute. Then ask me anything! 🎓</div>
   </div>
   <div class="claude-input-area">
     <textarea class="claude-textarea" id="claudeInput" placeholder="Ask anything about this lesson..." rows="1"></textarea>
@@ -1251,8 +1251,7 @@ function searchYT(query) {
   const frame = document.getElementById('ytFrame');
   frame.style.display = 'block';
   // Use YouTube's embed with playlist search as a proxy
-  frame.src = `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(q)}&autoplay=1`;
-}
+window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`, '_blank');}
 
 document.getElementById('ytSearchBtn').addEventListener('click', () => {
   searchYT(document.getElementById('ytSearchInput').value.trim());
@@ -1351,29 +1350,101 @@ function markComplete(idx, isLast) {
 /* ─── CLAUDE PANEL ─── */
 const claudePanel = document.getElementById('claudePanel');
 document.getElementById('claudeClose').addEventListener('click', () => claudePanel.classList.remove('open'));
-document.getElementById('openClaudeBtn').addEventListener('click', () => claudePanel.classList.toggle('open'));
+document.getElementById('openClaudeBtn').addEventListener('click', () => {
+  claudePanel.classList.toggle('open');
+  if (claudePanel.classList.contains('open')) checkApiKey();
+});
 
 const claudeMessages = document.getElementById('claudeMessages');
 const claudeInput = document.getElementById('claudeInput');
 const claudeSend = document.getElementById('claudeSend');
 
+/* ── API KEY MANAGEMENT ── */
+function getApiKey() { return localStorage.getItem('th_claude_key') || ''; }
+function saveApiKey(k) { localStorage.setItem('th_claude_key', k.trim()); }
+
+function checkApiKey() {
+  if (!getApiKey()) showKeyPrompt();
+}
+
+function showKeyPrompt() {
+  // Remove existing prompt if any
+  document.getElementById('keyPrompt')?.remove();
+
+  const div = document.createElement('div');
+  div.id = 'keyPrompt';
+  div.style.cssText = `
+    margin: 12px 16px; padding: 16px; border-radius: 12px;
+    background: rgba(168,85,247,0.08); border: 1px solid rgba(168,85,247,0.25);
+    font-family: 'Space Grotesk', sans-serif;
+  `;
+  div.innerHTML = `
+    <div style="font-size:13px;font-weight:600;color:#a855f7;margin-bottom:8px;">🔑 Enter your Anthropic API Key</div>
+    <div style="font-size:12px;color:#7a96bb;margin-bottom:10px;line-height:1.6;">
+      Get a free key at <a href="https://console.anthropic.com" target="_blank" style="color:#00c3ff;">console.anthropic.com</a>
+      <br>Your key is stored only in your browser — never sent anywhere else.
+    </div>
+    <div style="display:flex;gap:8px;">
+      <input id="keyInput" placeholder="sk-ant-..." style="
+        flex:1; background:rgba(255,255,255,0.06); border:1px solid rgba(168,85,247,0.3);
+        border-radius:8px; padding:8px 12px; font-family:'JetBrains Mono',monospace;
+        font-size:12px; color:#e2e8f0; outline:none;
+      ">
+      <button id="keySaveBtn" style="
+        padding:8px 14px; border-radius:8px; background:linear-gradient(135deg,#a855f7,#7c3aed);
+        border:none; color:white; font-family:'Space Grotesk',sans-serif;
+        font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;
+      ">Save Key</button>
+    </div>
+    <div style="font-size:11px;color:#3d5478;margin-top:8px;">💡 Your free tier includes millions of tokens — more than enough to learn!</div>
+  `;
+
+  // Insert before messages
+  claudeMessages.parentNode.insertBefore(div, claudeMessages);
+
+  div.querySelector('#keySaveBtn').addEventListener('click', () => {
+    const val = div.querySelector('#keyInput').value.trim();
+    if (!val.startsWith('sk-ant-') && !val.startsWith('sk-')) {
+      div.querySelector('#keyInput').style.borderColor = '#ef4444';
+      return;
+    }
+    saveApiKey(val);
+    div.remove();
+    appendAiMsg('✅ API key saved! Ask me anything about your lesson — I\'m ready to help! 🎓');
+  });
+}
+
+/* ── SEND MESSAGE ── */
 async function sendClaude() {
   const text = claudeInput.value.trim();
   if (!text) return;
+
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    showKeyPrompt();
+    appendAiMsg('⚠️ Please enter your API key above first!');
+    return;
+  }
+
   claudeInput.value = '';
 
   // User message
-  const userMsg = document.createElement('div');
-  userMsg.className = 'msg user';
-  userMsg.textContent = text;
-  claudeMessages.appendChild(userMsg);
+  appendUserMsg(text);
 
   // Typing indicator
   const typing = document.createElement('div');
   typing.className = 'msg typing';
-  typing.textContent = 'Claude is thinking...';
+  typing.id = 'typingIndicator';
+  typing.innerHTML = '<span style="display:inline-flex;gap:4px;align-items:center;">Claude is thinking <span id="dots">.</span></span>';
   claudeMessages.appendChild(typing);
   claudeMessages.scrollTop = claudeMessages.scrollHeight;
+
+  // Animated dots
+  let dotCount = 1;
+  const dotInterval = setInterval(() => {
+    const d = document.getElementById('dots');
+    if (d) { dotCount = (dotCount % 3) + 1; d.textContent = '.'.repeat(dotCount); }
+  }, 400);
 
   const lessonTitle = course.lessons[currentLesson]?.title || '';
   const courseName = course.name;
@@ -1381,35 +1452,122 @@ async function sendClaude() {
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: `You are a friendly AI tutor on TimeHop, an educational website. The student is currently learning about "${lessonTitle}" in the "${courseName}" course. Explain concepts simply, like talking to a curious 15-year-old. Use short paragraphs, emoji where helpful, and always encourage them. Keep answers under 200 words.`,
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 600,
+        system: `You are a friendly, encouraging AI tutor on TimeHop — a coding education website for beginners. The student is learning "${lessonTitle}" in the "${courseName}" course. Rules: explain simply (imagine talking to a 15-year-old), use relevant emoji, keep answers under 150 words, give code examples when helpful (use backticks), always end with a motivating line.`,
         messages: [{ role: 'user', content: text }]
       })
     });
+
+    clearInterval(dotInterval);
+    document.getElementById('typingIndicator')?.remove();
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      if (response.status === 401) {
+        appendAiMsg('❌ Invalid API key. Please click the 🔑 button below to update it.');
+        showResetKeyBtn();
+      } else if (response.status === 429) {
+        appendAiMsg('⏳ Rate limit hit! Wait a moment and try again.');
+      } else {
+        appendAiMsg(`❌ Error ${response.status}: ${err.error?.message || 'Something went wrong.'}`);
+      }
+      return;
+    }
+
     const data = await response.json();
-    const reply = data.content?.[0]?.text || 'Sorry, I had trouble answering. Try rephrasing!';
-    typing.remove();
-    const aiMsg = document.createElement('div');
-    aiMsg.className = 'msg ai';
-    aiMsg.textContent = reply;
-    claudeMessages.appendChild(aiMsg);
+    const reply = data.content?.[0]?.text || 'Hmm, empty response. Try asking again!';
+    appendAiMsg(reply);
+
   } catch (e) {
-    typing.remove();
-    const errMsg = document.createElement('div');
-    errMsg.className = 'msg ai';
-    errMsg.textContent = 'Hmm, I am having trouble connecting right now. Try again in a moment!';
-    claudeMessages.appendChild(errMsg);
+    clearInterval(dotInterval);
+    document.getElementById('typingIndicator')?.remove();
+
+    if (e.message?.includes('Failed to fetch') || e.message?.includes('NetworkError')) {
+      appendAiMsg('🌐 Network error — this usually means CORS is blocking the request from your hosted site. To fix this, see the note below about setting up a proxy, or test on localhost.');
+      showCorsHelp();
+    } else {
+      appendAiMsg('❌ Error: ' + e.message);
+    }
   }
   claudeMessages.scrollTop = claudeMessages.scrollHeight;
+}
+
+function appendUserMsg(text) {
+  const el = document.createElement('div');
+  el.className = 'msg user';
+  el.textContent = text;
+  claudeMessages.appendChild(el);
+  claudeMessages.scrollTop = claudeMessages.scrollHeight;
+}
+
+function appendAiMsg(text) {
+  const el = document.createElement('div');
+  el.className = 'msg ai';
+  el.style.whiteSpace = 'pre-wrap';
+  el.textContent = text;
+  claudeMessages.appendChild(el);
+  claudeMessages.scrollTop = claudeMessages.scrollHeight;
+}
+
+function showResetKeyBtn() {
+  document.getElementById('resetKeyBtn')?.remove();
+  const btn = document.createElement('button');
+  btn.id = 'resetKeyBtn';
+  btn.textContent = '🔑 Update API Key';
+  btn.style.cssText = `
+    margin: 0 16px 12px; padding: 8px 16px; border-radius: 8px;
+    background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.3);
+    color: #a855f7; font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px; font-weight: 600; cursor: pointer; display: block;
+  `;
+  btn.onclick = () => { localStorage.removeItem('th_claude_key'); btn.remove(); showKeyPrompt(); };
+  claudeMessages.parentNode.insertBefore(btn, document.querySelector('.claude-input-area'));
+}
+
+function showCorsHelp() {
+  document.getElementById('corsHelp')?.remove();
+  const div = document.createElement('div');
+  div.id = 'corsHelp';
+  div.style.cssText = `margin:8px 16px 12px;padding:12px 14px;border-radius:10px;
+    background:rgba(234,179,8,0.07);border:1px solid rgba(234,179,8,0.2);
+    font-family:'Space Grotesk',sans-serif;font-size:12px;color:#7a96bb;line-height:1.7;`;
+  div.innerHTML = `<strong style="color:#eab308;">💡 CORS Fix for GitHub Pages:</strong><br>
+    The Anthropic API blocks direct browser calls from external sites for security.<br>
+    <strong style="color:#e2e8f0;">Option 1:</strong> Use the <code style="color:#00c3ff;">anthropic-dangerous-direct-browser-access: true</code> header (already added — may work with newer API versions).<br>
+    <strong style="color:#e2e8f0;">Option 2:</strong> Set up a free <a href="https://workers.cloudflare.com" target="_blank" style="color:#00c3ff;">Cloudflare Worker</a> proxy (5 min setup).<br>
+    <strong style="color:#e2e8f0;">Option 3:</strong> Test locally by opening the file directly in your browser.`;
+  claudeMessages.parentNode.insertBefore(div, document.querySelector('.claude-input-area'));
 }
 
 claudeSend.addEventListener('click', sendClaude);
 claudeInput.addEventListener('keydown', e => {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendClaude(); }
 });
+
+// Add reset key button in panel header area
+(function addKeyResetToHeader() {
+  const header = document.querySelector('.claude-panel-header');
+  const resetBtn = document.createElement('button');
+  resetBtn.title = 'Update API Key';
+  resetBtn.textContent = '🔑';
+  resetBtn.style.cssText = `background:none;border:none;cursor:pointer;font-size:16px;margin-right:4px;opacity:0.6;transition:opacity 0.2s;`;
+  resetBtn.onmouseenter = () => resetBtn.style.opacity = '1';
+  resetBtn.onmouseleave = () => resetBtn.style.opacity = '0.6';
+  resetBtn.onclick = () => {
+    localStorage.removeItem('th_claude_key');
+    document.getElementById('keyPrompt')?.remove();
+    showKeyPrompt();
+  };
+  header.insertBefore(resetBtn, document.getElementById('claudeClose'));
+})();
 
 /* ─── GPT BUTTON ─── */
 document.getElementById('openGptBtn').addEventListener('click', () => {
