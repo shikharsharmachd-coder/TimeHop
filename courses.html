@@ -2,322 +2,396 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>AI Courses - TimeHop</title>
+<title>Courses - TimeHop</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="style.css">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  nav {
-    position: fixed; top: 0; left: 0; right: 0;
-    height: 70px; z-index: 1000;
-    display: flex; align-items: center;
-    padding: 0 48px;
-    background: rgba(6,12,26,0.92);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(0,195,255,0.10);
-    transition: top 0.4s ease;
-  }
-  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
-  .logo img { height: 46px; width: auto; filter: drop-shadow(0 0 8px rgba(0,195,255,0.55)); }
-  .nav-links { list-style: none; display: flex; gap: 4px; margin: 0 auto; }
-  .nav-links a {
-    display: block; padding: 7px 15px;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 13px; font-weight: 500;
-    color: #7a96bb; text-decoration: none;
-    border-radius: 6px; transition: 0.2s;
-  }
-  .nav-links a:hover { color: #e2e8f0; background: rgba(255,255,255,0.06); }
-  .nav-links a.active { color: #00c3ff; border-bottom: 2px solid #00c3ff; border-radius: 0; }
-  .auth-area { display: flex; align-items: center; gap: 10px; }
-  .signin-btn {
-    padding: 8px 22px; border-radius: 20px;
-    background: linear-gradient(135deg, #00c3ff, #007cf0);
-    color: white; border: none;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 13px; font-weight: 600;
-    cursor: pointer; transition: 0.2s;
-  }
-  .signin-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,195,255,0.4); }
-  .avatar {
-    width: 38px; height: 38px; border-radius: 50%;
-    background: linear-gradient(135deg, #00c3ff, #007cf0);
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 15px; color: white; cursor: pointer;
-  }
-  .hidden { display: none !important; }
-  .profile { cursor: pointer; }
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 70px; z-index: 1000;
+  display: flex; align-items: center;
+  padding: 0 48px;
+  background: rgba(6,12,26,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0,195,255,0.10);
+  transition: top 0.4s ease;
+}
+.logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+.logo img { height: 46px; width: auto; filter: drop-shadow(0 0 8px rgba(0,195,255,0.55)); }
+.nav-links { list-style: none; display: flex; gap: 4px; margin: 0 auto; }
+.nav-links a {
+  display: block; padding: 7px 15px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px; font-weight: 500;
+  color: #7a96bb; text-decoration: none;
+  border-radius: 6px; transition: 0.2s;
+}
+.nav-links a:hover { color: #e2e8f0; background: rgba(255,255,255,0.06); }
+.nav-links a.active { color: #00c3ff; border-bottom: 2px solid #00c3ff; border-radius: 0; }
+.auth-area { display: flex; align-items: center; gap: 10px; }
+.signin-btn {
+  padding: 8px 22px; border-radius: 20px;
+  background: linear-gradient(135deg, #00c3ff, #007cf0);
+  color: white; border: none;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: 0.2s;
+}
+.signin-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,195,255,0.4); }
+.avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: linear-gradient(135deg, #00c3ff, #007cf0);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 15px; color: white; cursor: pointer;
+}
+.hidden { display: none !important; }
+.profile { cursor: pointer; }
 
-  /* ── PRICING SECTION ── */
-  .pricing-section {
-    padding: 80px 60px 100px;
-    background: rgba(0,0,0,0.15);
-    position: relative;
-  }
-  .pricing-section::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0; height: 1px;
-    background: linear-gradient(to right, transparent, rgba(0,195,255,0.3), transparent);
-  }
-  .pricing-header {
-    text-align: center;
-    margin-bottom: 56px;
-  }
-  .pricing-eyebrow {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase;
-    color: #3d5478; margin-bottom: 14px;
-  }
-  .pricing-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: clamp(28px, 4vw, 46px);
-    font-weight: 700;
-    background: linear-gradient(135deg, #00c3ff, #a855f7);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 12px;
-  }
-  .pricing-sub {
-    font-family: 'Space Grotesk', sans-serif;
-    color: #7a96bb; font-size: 15px; max-width: 480px; margin: 0 auto;
-    line-height: 1.7;
-  }
-  .pricing-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-  .plan-card {
-    background: #0c1429;
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 20px;
-    padding: 36px 32px;
-    display: flex; flex-direction: column; gap: 20px;
-    position: relative; overflow: hidden;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-    font-family: 'Space Grotesk', sans-serif;
-  }
-  .plan-card:hover { transform: translateY(-6px); }
-  .plan-card::before {
-    content: ''; position: absolute;
-    top: 0; left: 0; right: 0; height: 3px; border-radius: 20px 20px 0 0;
-  }
-  .plan-card.plan-free::before   { background: linear-gradient(to right, #00e5a0, #007cf0); }
-  .plan-card.plan-pro::before    { background: linear-gradient(to right, #00c3ff, #a855f7); }
-  .plan-card.plan-elite::before  { background: linear-gradient(to right, #f5a623, #ec4899); }
-  .plan-card.plan-pro {
-    border-color: rgba(0,195,255,0.28);
-    box-shadow: 0 0 40px rgba(0,195,255,0.10);
-  }
-  .plan-badge {
-    position: absolute; top: 20px; right: 20px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
-    text-transform: uppercase; padding: 4px 11px;
-    border-radius: 20px;
-  }
-  .plan-pro .plan-badge {
-    background: rgba(0,195,255,0.15);
-    color: #00c3ff;
-    border: 1px solid rgba(0,195,255,0.3);
-  }
-  .plan-elite .plan-badge {
-    background: rgba(245,166,35,0.15);
-    color: #f5a623;
-    border: 1px solid rgba(245,166,35,0.3);
-  }
-  .plan-name {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 16px; font-weight: 700;
-    color: #e2e8f0;
-  }
-  .plan-price {
-    display: flex; align-items: baseline; gap: 4px;
-  }
-  .price-currency {
-    font-size: 20px; font-weight: 600; color: #7a96bb;
-  }
-  .price-amount {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 48px; font-weight: 900; color: #fff; line-height: 1;
-  }
-  .price-period {
-    font-size: 14px; color: #7a96bb;
-  }
-  .plan-card.plan-free .price-amount { color: #00e5a0; }
-  .plan-card.plan-pro  .price-amount { color: #00c3ff; }
-  .plan-card.plan-elite .price-amount { color: #f5a623; }
-  .plan-desc {
-    font-size: 14px; color: #7a96bb; line-height: 1.65;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    padding-top: 16px;
-  }
-  .plan-features {
-    list-style: none; display: flex; flex-direction: column; gap: 11px;
-    flex: 1;
-  }
-  .plan-features li {
-    display: flex; align-items: flex-start; gap: 10px;
-    font-size: 14px; color: #b0c4d8; line-height: 1.5;
-  }
-  .plan-features li::before {
-    content: '✓';
-    font-weight: 700; font-size: 13px; flex-shrink: 0; margin-top: 1px;
-  }
-  .plan-card.plan-free .plan-features li::before   { color: #00e5a0; }
-  .plan-card.plan-pro  .plan-features li::before   { color: #00c3ff; }
-  .plan-card.plan-elite .plan-features li::before  { color: #f5a623; }
-  .plan-feature-dim { color: #3d5478 !important; }
-  .plan-feature-dim::before { color: #3d5478 !important; }
-  .plan-cta {
-    display: block; width: 100%;
-    padding: 14px; border-radius: 10px;
-    text-align: center; text-decoration: none;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 14px; font-weight: 700;
-    cursor: pointer; border: none;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .plan-cta:hover { transform: translateY(-2px); }
-  .plan-card.plan-free  .plan-cta { background: rgba(0,229,160,0.12); color: #00e5a0; border: 1px solid rgba(0,229,160,0.3); }
-  .plan-card.plan-free  .plan-cta:hover { background: rgba(0,229,160,0.22); box-shadow: 0 8px 24px rgba(0,229,160,0.2); }
-  .plan-card.plan-pro   .plan-cta { background: linear-gradient(135deg, #00c3ff, #007cf0); color: #fff; }
-  .plan-card.plan-pro   .plan-cta:hover { box-shadow: 0 8px 24px rgba(0,195,255,0.4); }
-  .plan-card.plan-elite .plan-cta { background: linear-gradient(135deg, #f5a623, #ec4899); color: #fff; }
-  .plan-card.plan-elite .plan-cta:hover { box-shadow: 0 8px 24px rgba(245,166,35,0.35); }
-  .pricing-guarantee {
-    text-align: center; margin-top: 36px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px; color: #3d5478;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-  }
+/* ─── HERO ─── */
+.courses-hero {
+  padding: 140px 60px 60px;
+  text-align: center;
+  background: radial-gradient(ellipse at 50% -10%, rgba(0,195,255,0.12) 0%, transparent 60%);
+}
+.courses-hero h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(32px, 5vw, 60px);
+  font-weight: 900;
+  background: linear-gradient(135deg, #fff 0%, #00c3ff 60%, #a855f7 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 16px;
+}
+.courses-hero p {
+  font-family: 'Space Grotesk', sans-serif;
+  color: #7a96bb; font-size: 16px; max-width: 560px; margin: 0 auto 36px;
+  line-height: 1.7;
+}
+
+/* ─── FILTER BAR ─── */
+.filter-bar {
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; flex-wrap: wrap;
+  padding: 0 60px 48px;
+}
+.filter-btn {
+  padding: 8px 20px; border-radius: 20px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #7a96bb;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: 0.2s;
+}
+.filter-btn:hover, .filter-btn.active {
+  background: rgba(0,195,255,0.12);
+  border-color: rgba(0,195,255,0.4);
+  color: #00c3ff;
+}
+
+/* ─── COURSES GRID ─── */
+.all-courses-section {
+  padding: 0 60px 80px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase;
+  color: #3d5478; margin-bottom: 24px;
+  padding-left: 4px;
+}
+.courses-masonry {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 20px;
+  margin-bottom: 64px;
+}
+.course-tile {
+  background: #0b1426;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 28px 24px 24px;
+  position: relative; overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  display: flex; flex-direction: column; gap: 12px;
+  text-decoration: none;
+}
+.course-tile:hover:not(.locked) {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  border-color: rgba(0,195,255,0.25);
+}
+.course-tile::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+}
+.tile-html::before   { background: linear-gradient(to right, #e44d26, #f16529); }
+.tile-css::before    { background: linear-gradient(to right, #264de4, #2965f1); }
+.tile-js::before     { background: linear-gradient(to right, #f7df1e, #e0c000); }
+.tile-c::before      { background: linear-gradient(to right, #00599c, #0094d4); }
+.tile-cpp::before    { background: linear-gradient(to right, #004482, #0094d4); }
+.tile-python::before { background: linear-gradient(to right, #306998, #ffd343); }
+.tile-java::before   { background: linear-gradient(to right, #e76f00, #5382a1); }
+.tile-sql::before    { background: linear-gradient(to right, #00758f, #f29111); }
+.tile-git::before    { background: linear-gradient(to right, #f05032, #de4c36); }
+.tile-react::before  { background: linear-gradient(to right, #61dafb, #0d7cb5); }
+.tile-ai::before     { background: linear-gradient(to right, #00c3ff, #a855f7); }
+.tile-ds::before     { background: linear-gradient(to right, #00e5a0, #00c3ff); }
+
+.course-icon { font-size: 36px; line-height: 1; }
+.course-tag {
+  display: inline-block;
+  padding: 3px 10px; border-radius: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  width: fit-content;
+}
+.tag-beginner    { background: rgba(34,197,94,0.15);  color: #22c55e; }
+.tag-intermediate{ background: rgba(234,179,8,0.15);   color: #eab308; }
+.tag-advanced    { background: rgba(239,68,68,0.15);   color: #ef4444; }
+
+.course-tile h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 15px; font-weight: 700;
+  color: #e2e8f0; line-height: 1.3;
+  margin: 0;
+}
+.course-tile p {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px; color: #7a96bb;
+  line-height: 1.6; margin: 0; flex: 1;
+}
+.course-meta {
+  display: flex; align-items: center; gap: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: #3d5478; margin-top: 4px;
+}
+.course-meta span { display: flex; align-items: center; gap: 4px; }
+
+/* LOCKED TILES */
+.course-tile.locked {
+  cursor: default;
+  opacity: 0.7;
+}
+.course-tile.locked:hover { transform: none; box-shadow: none; }
+.lock-overlay {
+  position: absolute; inset: 0;
+  background: rgba(6,12,26,0.55);
+  backdrop-filter: blur(2px);
+  border-radius: 16px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 8px;
+  z-index: 2;
+}
+.lock-icon { font-size: 28px; }
+.lock-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px; font-weight: 600;
+  color: #f5a623;
+  padding: 5px 14px; border-radius: 12px;
+  background: rgba(245,166,35,0.15);
+  border: 1px solid rgba(245,166,35,0.35);
+}
+.lock-upgrade {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: #7a96bb;
+  text-align: center;
+}
+
+/* ─── PRICING ─── */
+.pricing-section {
+  padding: 80px 60px 100px;
+  background: rgba(0,0,0,0.15);
+  position: relative;
+}
+.pricing-section::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(to right, transparent, rgba(0,195,255,0.3), transparent);
+}
+.pricing-header { text-align: center; margin-bottom: 56px; }
+.pricing-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase;
+  color: #3d5478; margin-bottom: 14px;
+}
+.pricing-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(28px, 4vw, 46px); font-weight: 700;
+  background: linear-gradient(135deg, #00c3ff, #a855f7);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 12px;
+}
+.pricing-sub {
+  font-family: 'Space Grotesk', sans-serif;
+  color: #7a96bb; font-size: 15px; max-width: 480px; margin: 0 auto; line-height: 1.7;
+}
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px; max-width: 1100px; margin: 0 auto;
+}
+.plan-card {
+  background: #0c1429;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px; padding: 36px 32px;
+  display: flex; flex-direction: column; gap: 20px;
+  position: relative; overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.plan-card:hover { transform: translateY(-6px); }
+.plan-card::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 3px; border-radius: 20px 20px 0 0;
+}
+.plan-card.plan-free::before   { background: linear-gradient(to right, #00e5a0, #007cf0); }
+.plan-card.plan-pro::before    { background: linear-gradient(to right, #00c3ff, #a855f7); }
+.plan-card.plan-elite::before  { background: linear-gradient(to right, #f5a623, #ec4899); }
+.plan-card.plan-pro { border-color: rgba(0,195,255,0.28); box-shadow: 0 0 40px rgba(0,195,255,0.10); }
+.plan-badge {
+  position: absolute; top: 20px; right: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 4px 11px; border-radius: 20px;
+}
+.plan-pro .plan-badge   { background: rgba(0,195,255,0.15); color: #00c3ff; border: 1px solid rgba(0,195,255,0.3); }
+.plan-elite .plan-badge { background: rgba(245,166,35,0.15); color: #f5a623; border: 1px solid rgba(245,166,35,0.3); }
+.plan-name { font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 700; color: #e2e8f0; }
+.plan-price { display: flex; align-items: baseline; gap: 4px; }
+.price-currency { font-size: 20px; font-weight: 600; color: #7a96bb; }
+.price-amount { font-family: 'Orbitron', sans-serif; font-size: 48px; font-weight: 900; color: #fff; line-height: 1; }
+.price-period { font-size: 14px; color: #7a96bb; }
+.plan-card.plan-free  .price-amount { color: #00e5a0; }
+.plan-card.plan-pro   .price-amount { color: #00c3ff; }
+.plan-card.plan-elite .price-amount { color: #f5a623; }
+.plan-desc { font-size: 14px; color: #7a96bb; line-height: 1.65; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 16px; }
+.plan-features { list-style: none; display: flex; flex-direction: column; gap: 11px; flex: 1; }
+.plan-features li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: #b0c4d8; line-height: 1.5; }
+.plan-features li::before { content: '✓'; font-weight: 700; font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+.plan-card.plan-free  .plan-features li::before { color: #00e5a0; }
+.plan-card.plan-pro   .plan-features li::before { color: #00c3ff; }
+.plan-card.plan-elite .plan-features li::before { color: #f5a623; }
+.plan-feature-dim { color: #3d5478 !important; }
+.plan-cta {
+  display: block; width: 100%; padding: 14px; border-radius: 10px;
+  text-align: center; text-decoration: none;
+  font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700;
+  cursor: pointer; border: none; transition: transform 0.2s, box-shadow 0.2s;
+}
+.plan-cta:hover { transform: translateY(-2px); }
+.plan-card.plan-free  .plan-cta { background: rgba(0,229,160,0.12); color: #00e5a0; border: 1px solid rgba(0,229,160,0.3); }
+.plan-card.plan-free  .plan-cta:hover { background: rgba(0,229,160,0.22); box-shadow: 0 8px 24px rgba(0,229,160,0.2); }
+.plan-card.plan-pro   .plan-cta { background: linear-gradient(135deg, #00c3ff, #007cf0); color: #fff; }
+.plan-card.plan-pro   .plan-cta:hover { box-shadow: 0 8px 24px rgba(0,195,255,0.4); }
+.plan-card.plan-elite .plan-cta { background: linear-gradient(135deg, #f5a623, #ec4899); color: #fff; }
+.plan-card.plan-elite .plan-cta:hover { box-shadow: 0 8px 24px rgba(245,166,35,0.35); }
+.pricing-guarantee {
+  text-align: center; margin-top: 36px;
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #3d5478;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+
+/* LOCK MODAL */
+.lock-modal-bg {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(6,12,26,0.85); backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: center;
+}
+.lock-modal-box {
+  background: #0c1429; border: 1px solid rgba(245,166,35,0.3);
+  border-radius: 24px; padding: 48px 40px; max-width: 400px; width: 90%;
+  text-align: center; position: relative;
+  box-shadow: 0 0 60px rgba(245,166,35,0.15);
+}
+.lock-modal-box .lm-icon { font-size: 52px; margin-bottom: 16px; }
+.lock-modal-box h3 {
+  font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 700;
+  color: #f5a623; margin-bottom: 12px;
+}
+.lock-modal-box p {
+  font-family: 'Space Grotesk', sans-serif; font-size: 14px;
+  color: #7a96bb; line-height: 1.7; margin-bottom: 28px;
+}
+.lm-btns { display: flex; gap: 12px; }
+.lm-btn-upgrade {
+  flex: 1; padding: 12px; border-radius: 10px;
+  background: linear-gradient(135deg, #f5a623, #ec4899);
+  color: #fff; border: none; cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700;
+  transition: 0.2s;
+}
+.lm-btn-upgrade:hover { box-shadow: 0 8px 24px rgba(245,166,35,0.4); }
+.lm-btn-close {
+  flex: 1; padding: 12px; border-radius: 10px;
+  background: rgba(255,255,255,0.05); color: #7a96bb;
+  border: 1px solid rgba(255,255,255,0.1); cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600;
+  transition: 0.2s;
+}
+.lm-btn-close:hover { background: rgba(255,255,255,0.09); }
 </style>
 </head>
 
 <body>
 
 <!-- NAVBAR -->
-
 <nav>
-<a href="index.html" class="logo">
-  <img src="nav.png" alt="TimeHop Logo">
-</a>
-<ul class="nav-links">
-<li><a href="index.html">Home</a></li>
-<li><a href="past.html">Past</a></li>
-<li><a href="present.html">Present</a></li>
-<li><a href="future.html">Future</a></li>
-<li><a href="test.html">Test</a></li>
-<li><a href="courses.html" class="active">Courses</a></li>
-<li><a href="contact.html">Contact</a></li>
-</ul>
-<div class="auth-area">
-  <button id="signinBtn" class="signin-btn">Sign In</button>
-  <div class="profile hidden" id="profileBox">
-    <div class="avatar" id="avatarLetter"></div>
+  <a href="index.html" class="logo">
+    <img src="nav.png" alt="TimeHop Logo">
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="past.html">Past</a></li>
+    <li><a href="present.html">Present</a></li>
+    <li><a href="future.html">Future</a></li>
+    <li><a href="test.html">Test</a></li>
+    <li><a href="courses.html" class="active">Courses</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="auth-area">
+    <button id="signinBtn" class="signin-btn">Sign In</button>
+    <div class="profile hidden" id="profileBox">
+      <div class="avatar" id="avatarLetter"></div>
+    </div>
   </div>
-</div>
 </nav>
 
-
 <!-- HERO -->
-
-<section class="present-hero">
-
-<h1>AI Learning Courses</h1>
-
-<p>
-Start your journey into Artificial Intelligence.  
-These courses provide a roadmap from beginner to advanced AI skills.
-</p>
-
+<section class="courses-hero">
+  <h1>Learn to Code & Build AI</h1>
+  <p>From zero to hero — master HTML, CSS, JavaScript, Python, C, and more. Real content, no fluff, built for curious minds.</p>
 </section>
 
-
-<!-- COURSE GRID -->
-
-<section class="courses-section">
-
-<div class="courses-grid">
-
-<div class="course-card">
-
-<h2>AI Fundamentals</h2>
-
-<p>
-Learn what Artificial Intelligence is, how it works,
-and where it is used in real life.
-</p>
-
-<ul>
-<li>History of AI</li>
-<li>AI vs Machine Learning</li>
-<li>Real World AI Applications</li>
-<li>Introduction to Neural Networks</li>
-</ul>
-
-<a href="https://www.youtube.com/results?search_query=ai+fundamentals" target="_blank" class="btn">Start Learning</a>
-
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <button class="filter-btn active" data-filter="all">All Courses</button>
+  <button class="filter-btn" data-filter="beginner">Beginner</button>
+  <button class="filter-btn" data-filter="intermediate">Intermediate</button>
+  <button class="filter-btn" data-filter="advanced">Advanced</button>
+  <button class="filter-btn" data-filter="free">Free</button>
+  <button class="filter-btn" data-filter="pro">Pro Only</button>
 </div>
 
-
-<div class="course-card">
-
-<h2>Machine Learning</h2>
-
-<p>
-Understand how machines learn from data and make predictions.
-</p>
-
-<ul>
-<li>Supervised Learning</li>
-<li>Unsupervised Learning</li>
-<li>Regression & Classification</li>
-<li>Model Training</li>
-</ul>
-
-<a href="https://www.youtube.com/results?search_query=machine+learning+tutorial" target="_blank" class="btn">Start Learning</a>
-
-</div>
-
-
-<div class="course-card">
-
-<h2>Deep Learning & AI</h2>
-
-<p>
-Explore advanced AI topics like deep learning and neural networks.
-</p>
-
-<ul>
-<li>Deep Neural Networks</li>
-<li>Computer Vision</li>
-<li>Natural Language Processing</li>
-<li>AI Research & Development</li>
-</ul>
-
-<a href="https://www.youtube.com/results?search_query=deep+learning+tutorial" target="_blank" class="btn">Start Learning</a>
-
-</div>
-
-</div>
-
+<!-- COURSES GRID -->
+<section class="all-courses-section">
+  <div class="section-label">// 25 courses available</div>
+  <div class="courses-masonry" id="coursesGrid"></div>
 </section>
 
-
-<!-- PRICING PLANS -->
+<!-- PRICING -->
 <section class="pricing-section">
   <div class="pricing-header">
     <div class="pricing-eyebrow">Choose Your Path</div>
-    <h2 class="pricing-title">Unlock Your AI Journey</h2>
-    <p class="pricing-sub">Start free, upgrade when you're ready. All plans give you access to the TimeHop learning universe.</p>
+    <h2 class="pricing-title">Unlock Your Full Journey</h2>
+    <p class="pricing-sub">Start free, upgrade when ready. All plans give you access to the TimeHop universe.</p>
   </div>
-
   <div class="pricing-grid">
-
-    <!-- FREE -->
     <div class="plan-card plan-free">
       <div class="plan-name">Starter</div>
       <div class="plan-price">
@@ -325,19 +399,17 @@ Explore advanced AI topics like deep learning and neural networks.
         <span class="price-amount">0</span>
         <span class="price-period">/ forever</span>
       </div>
-      <p class="plan-desc">Everything you need to begin exploring the world of AI — completely free.</p>
+      <p class="plan-desc">Everything you need to begin your coding journey — completely free.</p>
       <ul class="plan-features">
-        <li>Access to AI Fundamentals course</li>
+        <li>HTML, CSS & JS basics</li>
         <li>Past, Present & Future timeline</li>
         <li>3 quiz attempts per month</li>
         <li>Community forum access</li>
-        <li class="plan-feature-dim" style="color:#3d5478;">✗ &nbsp;Certificates</li>
-        <li class="plan-feature-dim" style="color:#3d5478;">✗ &nbsp;AI Tools deep dives</li>
+        <li class="plan-feature-dim">✗ &nbsp;Python, C, C++, Java & more</li>
+        <li class="plan-feature-dim">✗ &nbsp;Certificates</li>
       </ul>
-      <a href="#" class="plan-cta" onclick="alert('You are already on the Free plan!')">Get Started Free</a>
+      <a href="#" class="plan-cta" onclick="event.preventDefault();alert('You are already on the Free plan!')">Get Started Free</a>
     </div>
-
-    <!-- PRO -->
     <div class="plan-card plan-pro">
       <span class="plan-badge">Most Popular</span>
       <div class="plan-name">Pro</div>
@@ -346,19 +418,17 @@ Explore advanced AI topics like deep learning and neural networks.
         <span class="price-amount">9</span>
         <span class="price-period">/ month</span>
       </div>
-      <p class="plan-desc">The complete AI learning experience with certificates and unlimited quizzes.</p>
+      <p class="plan-desc">All 25 courses, unlimited quizzes, and completion certificates.</p>
       <ul class="plan-features">
         <li>All Starter features</li>
-        <li>All 3 courses — Fundamentals, ML & Deep Learning</li>
+        <li>All 25 courses unlocked</li>
         <li>Unlimited quiz attempts</li>
         <li>Course completion certificates</li>
-        <li>AI Tools deep-dive articles</li>
+        <li>Claude AI tutor in every lesson</li>
         <li>Priority community support</li>
       </ul>
       <a href="contact.html" class="plan-cta">Start Pro — $9/mo</a>
     </div>
-
-    <!-- ELITE -->
     <div class="plan-card plan-elite">
       <span class="plan-badge">Best Value</span>
       <div class="plan-name">Elite</div>
@@ -367,7 +437,7 @@ Explore advanced AI topics like deep learning and neural networks.
         <span class="price-amount">49</span>
         <span class="price-period">/ year</span>
       </div>
-      <p class="plan-desc">Everything in Pro, billed annually. Save over 50% and get exclusive perks.</p>
+      <p class="plan-desc">Everything in Pro, billed annually. Save 55% and get exclusive perks.</p>
       <ul class="plan-features">
         <li>Everything in Pro</li>
         <li>Save $59 vs monthly billing</li>
@@ -378,41 +448,291 @@ Explore advanced AI topics like deep learning and neural networks.
       </ul>
       <a href="contact.html" class="plan-cta">Go Elite — $49/yr</a>
     </div>
-
   </div>
-
   <div class="pricing-guarantee">
     <span>🔒</span>
     <span>30-day money-back guarantee &nbsp;·&nbsp; No hidden fees &nbsp;·&nbsp; Cancel anytime</span>
   </div>
 </section>
 
+<footer><p>© 2026 TimeHop</p></footer>
 
-<footer>
-<p>© 2026 TimeHop</p>
-</footer>
+<!-- LOCK MODAL -->
+<div class="lock-modal-bg hidden" id="lockModal">
+  <div class="lock-modal-box">
+    <div class="lm-icon">🔒</div>
+    <h3>Pro Course</h3>
+    <p>This course is available on the <strong style="color:#f5a623">Pro</strong> or <strong style="color:#f5a623">Elite</strong> plan. Upgrade to unlock all 25 courses, AI tutor, and completion certificates.</p>
+    <div class="lm-btns">
+      <button class="lm-btn-upgrade" onclick="window.location.href='contact.html'">Upgrade Now</button>
+      <button class="lm-btn-close" onclick="document.getElementById('lockModal').classList.add('hidden')">Maybe Later</button>
+    </div>
+  </div>
+</div>
+
 <script src="script.js"></script>
+
+<!-- AUTH MODAL -->
 <div id="loginModal" class="login-modal hidden">
-
-<div class="login-box">
-
-<input id="loginName" placeholder="Name">
-<input id="loginEmail" placeholder="Email">
-
-<select id="loginGender">
-<option value="">Gender</option>
-<option>Male</option>
-<option>Female</option>
-</select>
-
-<textarea id="loginBio" placeholder="Bio"></textarea>
-
-<button id="createAccount" class="btn">Create Account</button>
-
-</div>
+  <div class="login-box">
+    <input id="loginName" placeholder="Name">
+    <input id="loginEmail" placeholder="Email">
+    <select id="loginGender">
+      <option value="">Gender</option>
+      <option>Male</option>
+      <option>Female</option>
+    </select>
+    <textarea id="loginBio" placeholder="Bio"></textarea>
+    <button id="createAccount" class="btn">Create Account</button>
+  </div>
 </div>
 
+<script>
+/* ─── COURSE DATA ─── */
+const courses = [
+  /* FREE COURSES */
+  {
+    id: 'html', slug: 'html', free: true, level: 'beginner',
+    icon: '🌐', tileClass: 'tile-html',
+    name: 'HTML — The Skeleton of the Web',
+    desc: 'Build your very first webpage. Learn tags, structure, and how browsers read your code.',
+    lessons: 10, duration: '2h 30m'
+  },
+  {
+    id: 'css', slug: 'css', free: true, level: 'beginner',
+    icon: '🎨', tileClass: 'tile-css',
+    name: 'CSS — Make It Beautiful',
+    desc: 'Colors, fonts, layouts, animations — make your pages look stunning.',
+    lessons: 12, duration: '3h'
+  },
+  {
+    id: 'js-basics', slug: 'js', free: true, level: 'beginner',
+    icon: '⚡', tileClass: 'tile-js',
+    name: 'JavaScript Basics',
+    desc: 'Variables, functions, loops — bring your pages to life with interactivity.',
+    lessons: 14, duration: '4h'
+  },
+  /* PRO COURSES */
+  {
+    id: 'c-lang', slug: 'c', free: false, level: 'beginner',
+    icon: '⚙️', tileClass: 'tile-c',
+    name: 'C Language — Where it All Began',
+    desc: 'The foundation of modern programming. Master memory, pointers, and system-level logic.',
+    lessons: 16, duration: '5h'
+  },
+  {
+    id: 'cpp', slug: 'cpp', free: false, level: 'intermediate',
+    icon: '🔷', tileClass: 'tile-cpp',
+    name: 'C++ — Power & Speed',
+    desc: 'Object-oriented programming, STL, and game-ready code with the fastest compiled language.',
+    lessons: 18, duration: '6h'
+  },
+  {
+    id: 'python-basics', slug: 'python', free: false, level: 'beginner',
+    icon: '🐍', tileClass: 'tile-python',
+    name: 'Python — The Language of AI',
+    desc: 'The most loved language in the world. Simple syntax, infinite power. Start here for AI.',
+    lessons: 15, duration: '4h 30m'
+  },
+  {
+    id: 'python-advanced', slug: 'python-adv', free: false, level: 'advanced',
+    icon: '🧠', tileClass: 'tile-python',
+    name: 'Python Advanced',
+    desc: 'Decorators, generators, async programming, OOP deep dive and Pythonic best practices.',
+    lessons: 20, duration: '7h'
+  },
+  {
+    id: 'java', slug: 'java', free: false, level: 'intermediate',
+    icon: '☕', tileClass: 'tile-java',
+    name: 'Java — Enterprise Powerhouse',
+    desc: 'OOP, classes, interfaces, collections — the language behind Android and big enterprise systems.',
+    lessons: 18, duration: '6h'
+  },
+  {
+    id: 'js-advanced', slug: 'js-adv', free: false, level: 'advanced',
+    icon: '🚀', tileClass: 'tile-js',
+    name: 'JavaScript Advanced',
+    desc: 'Closures, async/await, Promises, event loop and DOM mastery for building real apps.',
+    lessons: 16, duration: '5h 30m'
+  },
+  {
+    id: 'react', slug: 'react', free: false, level: 'intermediate',
+    icon: '⚛️', tileClass: 'tile-react',
+    name: 'React — Build Modern UIs',
+    desc: 'Components, hooks, state management and the ecosystem behind million-dollar web apps.',
+    lessons: 20, duration: '7h'
+  },
+  {
+    id: 'sql', slug: 'sql', free: false, level: 'beginner',
+    icon: '🗄️', tileClass: 'tile-sql',
+    name: 'SQL & Databases',
+    desc: 'Store, query and manage data. Every app needs a database — learn the universal language.',
+    lessons: 12, duration: '3h'
+  },
+  {
+    id: 'git', slug: 'git', free: false, level: 'beginner',
+    icon: '🌿', tileClass: 'tile-git',
+    name: 'Git & GitHub',
+    desc: 'Version control every developer must know. Commit, branch, merge, and collaborate.',
+    lessons: 8, duration: '2h'
+  },
+  {
+    id: 'ai-fundamentals', slug: 'ai-fund', free: false, level: 'beginner',
+    icon: '🤖', tileClass: 'tile-ai',
+    name: 'AI Fundamentals',
+    desc: 'What is AI, how it learns, and where it is used today. The best starting point for AI.',
+    lessons: 12, duration: '3h 30m'
+  },
+  {
+    id: 'ml', slug: 'ml', free: false, level: 'intermediate',
+    icon: '📈', tileClass: 'tile-ai',
+    name: 'Machine Learning',
+    desc: 'Supervised & unsupervised learning, regression, classification, model training and evaluation.',
+    lessons: 18, duration: '6h'
+  },
+  {
+    id: 'deep-learning', slug: 'deep-learning', free: false, level: 'advanced',
+    icon: '🧬', tileClass: 'tile-ai',
+    name: 'Deep Learning & Neural Networks',
+    desc: 'CNNs, RNNs, Transformers, GANs — the cutting edge of AI you see in daily life.',
+    lessons: 22, duration: '8h'
+  },
+  {
+    id: 'nlp', slug: 'nlp', free: false, level: 'advanced',
+    icon: '💬', tileClass: 'tile-ai',
+    name: 'NLP — Language AI',
+    desc: 'How machines understand human language. Tokenization, embeddings, LLMs and chatbots.',
+    lessons: 16, duration: '5h 30m'
+  },
+  {
+    id: 'data-science', slug: 'ds', free: false, level: 'intermediate',
+    icon: '📊', tileClass: 'tile-ds',
+    name: 'Data Science with Python',
+    desc: 'NumPy, Pandas, Matplotlib — analyze real datasets and tell stories with data.',
+    lessons: 18, duration: '6h'
+  },
+  {
+    id: 'css-advanced', slug: 'css-adv', free: false, level: 'intermediate',
+    icon: '✨', tileClass: 'tile-css',
+    name: 'CSS Advanced & Animations',
+    desc: 'Flexbox, Grid, custom properties, scroll animations, and production-ready layouts.',
+    lessons: 14, duration: '4h 30m'
+  },
+  {
+    id: 'typescript', slug: 'ts', free: false, level: 'intermediate',
+    icon: '🔷', tileClass: 'tile-js',
+    name: 'TypeScript',
+    desc: 'JavaScript with superpowers. Types, interfaces, generics — write safer and smarter code.',
+    lessons: 14, duration: '4h'
+  },
+  {
+    id: 'nodejs', slug: 'node', free: false, level: 'intermediate',
+    icon: '🟩', tileClass: 'tile-js',
+    name: 'Node.js — Backend with JS',
+    desc: 'Run JavaScript on the server. Build APIs, handle files, and connect to databases.',
+    lessons: 16, duration: '5h'
+  },
+  {
+    id: 'cybersecurity', slug: 'cyber', free: false, level: 'intermediate',
+    icon: '🔐', tileClass: 'tile-c',
+    name: 'Cybersecurity Basics',
+    desc: 'Encryption, hacking fundamentals, secure coding and how to protect your applications.',
+    lessons: 12, duration: '4h'
+  },
+  {
+    id: 'dsa', slug: 'dsa', free: false, level: 'advanced',
+    icon: '🧩', tileClass: 'tile-cpp',
+    name: 'Data Structures & Algorithms',
+    desc: 'Arrays, linked lists, trees, graphs, sorting — the core of every coding interview.',
+    lessons: 24, duration: '9h'
+  },
+  {
+    id: 'prompt-engineering', slug: 'prompt', free: false, level: 'beginner',
+    icon: '💡', tileClass: 'tile-ai',
+    name: 'Prompt Engineering',
+    desc: 'The new skill of the AI era. Learn to write prompts that get incredible results from AI.',
+    lessons: 8, duration: '2h'
+  },
+  {
+    id: 'web-dev-project', slug: 'webdev', free: false, level: 'intermediate',
+    icon: '🏗️', tileClass: 'tile-html',
+    name: 'Full Web Dev Project',
+    desc: 'Build a complete website from scratch using HTML, CSS and JavaScript — real project.',
+    lessons: 20, duration: '7h'
+  },
+  {
+    id: 'python-ai-project', slug: 'py-project', free: false, level: 'advanced',
+    icon: '🛸', tileClass: 'tile-python',
+    name: 'Build an AI App with Python',
+    desc: 'Use real AI APIs, build a chatbot, image classifier or text analyzer — ship something real.',
+    lessons: 20, duration: '7h'
+  }
+];
 
+/* ─── RENDER CARDS ─── */
+function renderCourses(filter = 'all') {
+  const grid = document.getElementById('coursesGrid');
+  grid.innerHTML = '';
 
+  const filtered = courses.filter(c => {
+    if (filter === 'all') return true;
+    if (filter === 'free') return c.free;
+    if (filter === 'pro') return !c.free;
+    return c.level === filter;
+  });
+
+  filtered.forEach(c => {
+    const locked = !c.free;
+    const tile = document.createElement('div');
+    tile.className = `course-tile ${c.tileClass}${locked ? ' locked' : ''}`;
+    tile.dataset.level = c.level;
+    tile.dataset.free = c.free;
+
+    tile.innerHTML = `
+      ${locked ? `<div class="lock-overlay">
+        <div class="lock-icon">🔒</div>
+        <div class="lock-label">Pro Required</div>
+        <div class="lock-upgrade">Upgrade to unlock</div>
+      </div>` : ''}
+      <div class="course-icon">${c.icon}</div>
+      <span class="course-tag tag-${c.level}">${c.level}</span>
+      <h3>${c.name}</h3>
+      <p>${c.desc}</p>
+      <div class="course-meta">
+        <span>📚 ${c.lessons} lessons</span>
+        <span>⏱ ${c.duration}</span>
+      </div>
+    `;
+
+    if (!locked) {
+      tile.addEventListener('click', () => {
+        window.location.href = `detail.html?course=${c.slug}`;
+      });
+    } else {
+      tile.addEventListener('click', () => {
+        document.getElementById('lockModal').classList.remove('hidden');
+      });
+    }
+
+    grid.appendChild(tile);
+  });
+}
+
+/* ─── FILTER BUTTONS ─── */
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderCourses(btn.dataset.filter);
+  });
+});
+
+renderCourses();
+
+/* Close modal on backdrop */
+document.getElementById('lockModal').addEventListener('click', function(e){
+  if (e.target === this) this.classList.add('hidden');
+});
+</script>
 </body>
 </html>
