@@ -148,6 +148,21 @@ nav { position:fixed;top:0;left:0;right:0;height:70px;z-index:1000;display:flex;
 .lesson-nav-btn.next:hover{box-shadow:0 6px 20px rgba(0,195,255,0.4);transform:translateY(-2px);}
 .lesson-nav-btn.complete{background:linear-gradient(135deg,#22c55e,#16a34a);color:white;}
 .lesson-nav-btn.complete:hover{box-shadow:0 6px 20px rgba(34,197,94,0.4);transform:translateY(-2px);}
+
+/* TOPIC MODE */
+.detail-wrapper.topic-mode{display:block;min-height:100vh;}
+.topic-page{width:min(980px,calc(100% - 48px));margin:0 auto;padding:44px 0 100px;font-family:'Space Grotesk',sans-serif;}
+.topic-hero{display:flex;align-items:flex-start;gap:18px;margin-bottom:20px;flex-wrap:wrap;}
+.topic-icon{font-size:52px;line-height:1;flex-shrink:0;}
+.topic-heading{min-width:0;flex:1;}
+.topic-crumb{font-family:'JetBrains Mono',monospace;font-size:11px;color:#3d5478;margin-bottom:24px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.topic-crumb a{color:#00c3ff;text-decoration:none;}
+@media(max-width:720px){
+  .detail-wrapper{display:block;}
+  .sidebar{display:none;}
+  .main-content{padding:28px 22px 70px;max-width:none;}
+  .topic-page{width:calc(100% - 36px);padding-top:28px;}
+}
 </style>
 </head>
 <body>
@@ -1913,6 +1928,15 @@ document.getElementById('premiumModal').addEventListener('click', function(e){
 });
 
 /* Quiz */
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function buildQuiz(questions) {
   const sec = document.getElementById('quizSection');
   if (!questions || !questions.length) { sec.innerHTML=''; return; }
@@ -1927,7 +1951,7 @@ function buildQuiz(questions) {
         <div class="quiz-options">
           ${q.opts.map((o,oi) => `
             <div class="quiz-opt" data-qi="${qi}" data-oi="${oi}" onclick="selectOpt(${qi},${oi})">
-              <div class="opt-dot"></div>${o}
+              <div class="opt-dot"></div><span>${escapeHtml(o)}</span>
             </div>`).join('')}
         </div>
       </div>`).join('')}
@@ -1996,16 +2020,20 @@ loadLesson(currentLesson);
 ═══════════════════════════════════════════ */
 function initTopicMode(slug) {
   const t = AI_TOPICS[slug];
+  const wrapper = document.querySelector('.detail-wrapper');
+  wrapper.classList.add('topic-mode');
+  document.querySelector('.nav-links a.active')?.classList.remove('active');
+  document.querySelector('.nav-links a[href="past.html"]')?.classList.add('active');
 
-  document.querySelector('.detail-wrapper').innerHTML = `
-    <div id="topicPage" style="max-width:860px;margin:0 auto;padding:44px 56px 100px;font-family:'Space Grotesk',sans-serif;">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#3d5478;margin-bottom:24px;display:flex;align-items:center;gap:8px;">
+  wrapper.innerHTML = `
+    <div id="topicPage" class="topic-page">
+      <div class="topic-crumb">
         <a href="past.html" style="color:#00c3ff;text-decoration:none;">← Back to Past</a>
         <span>›</span><span>${t.era}</span><span>›</span><span>${t.title}</span>
       </div>
-      <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;flex-wrap:wrap;">
-        <div style="font-size:52px;line-height:1;flex-shrink:0;">${t.icon}</div>
-        <div>
+      <div class="topic-hero">
+        <div class="topic-icon">${t.icon}</div>
+        <div class="topic-heading">
           <div style="display:inline-block;padding:3px 12px;border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;background:rgba(0,195,255,0.1);color:${t.eraColor};border:1px solid ${t.eraColor}33;margin-bottom:10px;">${t.era} · ${t.year}</div>
           <h1 style="font-family:'Orbitron',sans-serif;font-size:clamp(22px,3vw,34px);font-weight:900;color:#e2e8f0;line-height:1.2;margin:0 0 10px;">${t.title}</h1>
           <p style="font-size:15px;color:#7a96bb;line-height:1.7;margin:0;">${t.subtitle}</p>
